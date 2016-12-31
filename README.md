@@ -34,7 +34,7 @@ Download the latest JAR or grab [via Maven][maven-search].
 
 ## Getting Started
 
-### POJO matchers
+### POJO matchers [![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-pojo.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-pojo)
 
 Many applications at Spotify are very data heavy.  They might be
 aggregation services that combine a lot of data structures into even
@@ -103,7 +103,7 @@ item 0: User {
 }
 ```
 
-### JSON matchers
+### JSON matchers [![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-jackson.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-jackson)
 
 To include into your Maven build, add this dependency:
 
@@ -153,7 +153,7 @@ but:
 }
 ```
 
-### java.util.Optional matchers
+### java.util.Optional matchers [![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-optional.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-optional)
 
 `com.spotify:hamcrest-optional` provides matchers for the Java 8
 Optional type so you don't have to unpack the Optional in your tests.
@@ -172,7 +172,7 @@ assertThat(response, hasValue());
 assertThat(response, isEmpty());
 ```
 
-### Future matchers
+### Future matchers [![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-future.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-future)
 
 Similar to the Optional matchers, the CompletionStage /
 CompletableFuture matchers in `com.spotify:hamcrest-future` allow
