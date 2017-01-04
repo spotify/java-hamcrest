@@ -20,6 +20,7 @@
 
 package com.spotify.hamcrest.future;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.hamcrest.Description;
@@ -36,7 +37,7 @@ class SuccessfullyCompletedBlockingFuture<T>
    * value matches the given matcher.
    */
   SuccessfullyCompletedBlockingFuture(final Matcher<T> matcher) {
-    this.matcher = matcher;
+    this.matcher = Objects.requireNonNull(matcher);
   }
 
   @Override

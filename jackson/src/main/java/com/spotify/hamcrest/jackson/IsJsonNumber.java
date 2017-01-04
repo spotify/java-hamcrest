@@ -26,6 +26,7 @@ import static org.hamcrest.core.IsAnything.anything;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.NumericNode;
+import java.util.Objects;
 import java.util.function.Function;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -35,10 +36,11 @@ public class IsJsonNumber extends AbstractJsonNodeMatcher<NumericNode> {
   private final Matcher<?> numberMatcher;
   private final Function<NumericNode, Object> projection;
 
-  private IsJsonNumber(Matcher<?> numberMatcher, Function<NumericNode, Object> projection) {
+  private IsJsonNumber(final Matcher<?> numberMatcher,
+                       final Function<NumericNode, Object> projection) {
     super(JsonNodeType.NUMBER);
-    this.numberMatcher = numberMatcher;
-    this.projection = projection;
+    this.numberMatcher = Objects.requireNonNull(numberMatcher);
+    this.projection = Objects.requireNonNull(projection);
   }
 
   public static Matcher<JsonNode> jsonNumber() {

@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
+import java.util.Objects;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
@@ -36,7 +37,7 @@ public class IsJsonArray extends AbstractJsonNodeMatcher<ArrayNode> {
 
   private IsJsonArray(Matcher<? super Collection<JsonNode>> elementsMatcher) {
     super(JsonNodeType.ARRAY);
-    this.elementsMatcher = elementsMatcher;
+    this.elementsMatcher = Objects.requireNonNull(elementsMatcher);
   }
 
   public static Matcher<JsonNode> jsonArray() {

@@ -26,6 +26,7 @@ import static org.hamcrest.core.IsAnything.anything;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.TextNode;
+import java.util.Objects;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
@@ -33,9 +34,9 @@ public class IsJsonText extends AbstractJsonNodeMatcher<TextNode> {
 
   private final Matcher<? super String> textMatcher;
 
-  private IsJsonText(Matcher<? super String> textMatcher) {
+  private IsJsonText(final Matcher<? super String> textMatcher) {
     super(JsonNodeType.STRING);
-    this.textMatcher = textMatcher;
+    this.textMatcher = Objects.requireNonNull(textMatcher);
   }
 
   public static Matcher<JsonNode> jsonText() {

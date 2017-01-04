@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.spotify.hamcrest.util.DescriptionUtils;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -36,9 +37,9 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
 
   private final ImmutableMap<String, Matcher<? super JsonNode>> entryMatchers;
 
-  private IsJsonObject(ImmutableMap<String, Matcher<? super JsonNode>> entryMatchers) {
+  private IsJsonObject(final ImmutableMap<String, Matcher<? super JsonNode>> entryMatchers) {
     super(JsonNodeType.OBJECT);
-    this.entryMatchers = entryMatchers;
+    this.entryMatchers = Objects.requireNonNull(entryMatchers);
   }
 
   public static IsJsonObject jsonObject() {

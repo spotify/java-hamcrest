@@ -23,6 +23,7 @@ package com.spotify.hamcrest.jackson;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.spotify.hamcrest.util.LanguageUtils;
+import java.util.Objects;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
@@ -31,9 +32,9 @@ public abstract class AbstractJsonNodeMatcher<A extends JsonNode>
 
   private final JsonNodeType type;
 
-  protected AbstractJsonNodeMatcher(JsonNodeType type) {
+  AbstractJsonNodeMatcher(final JsonNodeType type) {
     super(JsonNode.class);
-    this.type = type;
+    this.type = Objects.requireNonNull(type);
   }
 
   @Override
