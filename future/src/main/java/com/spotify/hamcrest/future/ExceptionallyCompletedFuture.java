@@ -20,6 +20,7 @@
 
 package com.spotify.hamcrest.future;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.hamcrest.Description;
@@ -35,7 +36,7 @@ class ExceptionallyCompletedFuture<T> extends TypeSafeDiagnosingMatcher<Future<T
    * matches the given Matcher.
    */
   ExceptionallyCompletedFuture(final Matcher<? extends Throwable> matcher) {
-    this.matcher = matcher;
+    this.matcher = Objects.requireNonNull(matcher);
   }
 
   @Override

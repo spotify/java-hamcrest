@@ -22,6 +22,7 @@ package com.spotify.hamcrest.future;
 
 import static com.spotify.hamcrest.future.Utils.getStackTraceAsString;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -39,7 +40,7 @@ class SuccessfullyCompletedCompletionStage<T>
   private final Matcher<T> matcher;
 
   SuccessfullyCompletedCompletionStage(final Matcher<T> matcher) {
-    this.matcher = matcher;
+    this.matcher = Objects.requireNonNull(matcher);
   }
 
   @Override

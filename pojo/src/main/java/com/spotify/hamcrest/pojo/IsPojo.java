@@ -26,6 +26,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -37,9 +38,9 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
   private final Class<A> cls;
   private final ImmutableMap<String, Matcher<?>> methodMatchers;
 
-  private IsPojo(Class<A> cls, ImmutableMap<String, Matcher<?>> methodMatchers) {
-    this.cls = cls;
-    this.methodMatchers = methodMatchers;
+  private IsPojo(final Class<A> cls, final ImmutableMap<String, Matcher<?>> methodMatchers) {
+    this.cls = Objects.requireNonNull(cls);
+    this.methodMatchers = Objects.requireNonNull(methodMatchers);
   }
 
   public static <A> IsPojo<A> pojo(Class<A> cls) {

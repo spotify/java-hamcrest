@@ -20,6 +20,7 @@
 
 package com.spotify.hamcrest.future;
 
+import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import org.hamcrest.Description;
@@ -37,7 +38,7 @@ class SuccessfullyCompletedBlockingCompletionStage<T>
   private final Matcher<T> matcher;
 
   SuccessfullyCompletedBlockingCompletionStage(final Matcher<T> matcher) {
-    this.matcher = matcher;
+    this.matcher = Objects.requireNonNull(matcher);
   }
 
   @Override
