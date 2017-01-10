@@ -2,7 +2,7 @@
  * -\-\-
  * hamcrest-jackson
  * --
- * Copyright (C) 2016 Spotify AB
+ * Copyright (C) 2017 Spotify AB
  * --
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.spotify.hamcrest.util.DescriptionUtils;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -56,6 +58,7 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
 
   @Override
   protected boolean matchesNode(ObjectNode node, Description mismatchDescription) {
+    List<String> mismatchedKeys = new ArrayList<>();
     for (Map.Entry<String, Matcher<? super JsonNode>> entryMatcher : entryMatchers.entrySet()) {
       final String key = entryMatcher.getKey();
       final Matcher<? super JsonNode> valueMatcher = entryMatcher.getValue();
@@ -63,11 +66,31 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
       final JsonNode value = node.path(key);
 
       if (!valueMatcher.matches(value)) {
-        describeKey(key, mismatchDescription, d -> valueMatcher.describeMismatch(value, d));
-        return false;
+        mismatchedKeys.add(key);
       }
     }
+    if (!mismatchedKeys.isEmpty()) {
+      describeMismatches(node, mismatchDescription, mismatchedKeys);
+      return false;
+    }
     return true;
+  }
+
+  private void describeMismatches(final ObjectNode node,
+                                  final Description mismatchDescription,
+                                  final List<String> mismatchedKeys) {
+    mismatchDescription
+        .appendText("{\n")
+        .appendText("  ...\n");
+
+    for (String key : mismatchedKeys) {
+      final Matcher<? super JsonNode> valueMatcher = entryMatchers.get(key);
+      final JsonNode value = node.path(key);
+      describeKey(key, mismatchDescription, d -> valueMatcher.describeMismatch(value, d));
+    }
+
+    mismatchDescription
+        .appendText("}");
   }
 
   @Override
@@ -93,7 +116,7 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
   static void describeKey(String key, Description mismatchDescription,
                           Consumer<Description> innerAction) {
     mismatchDescription
-        .appendText("{\n  ...\n  ")
+        .appendText("  ")
         .appendText(jsonEscapeString(key))
         .appendText(": ");
 
@@ -101,7 +124,7 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
     innerAction.accept(innerDescription);
     DescriptionUtils.indentDescription(mismatchDescription, innerDescription);
 
-    mismatchDescription.appendText("  ...\n}");
+    mismatchDescription.appendText("  ...\n");
   }
 
   static String jsonEscapeString(String string) {
