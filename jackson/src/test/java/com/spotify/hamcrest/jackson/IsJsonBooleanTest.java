@@ -63,7 +63,7 @@ public class IsJsonBooleanTest {
     sut.describeMismatch(NF.booleanNode(true), description);
 
     assertThat(description.toString(), is(
-        "was a boolean node was <true>"
+        "was a boolean node with value that was <true>"
     ));
   }
 
@@ -87,7 +87,7 @@ public class IsJsonBooleanTest {
     sut.describeTo(description);
 
     assertThat(description.toString(), is(
-        "a boolean node is <false>"
+        "a boolean node with value that is <false>"
     ));
   }
 }

@@ -57,7 +57,7 @@ public class IsJsonText extends AbstractJsonNodeMatcher<TextNode> {
     if (textMatcher.matches(value)) {
       return true;
     } else {
-      mismatchDescription.appendText("was a text node ");
+      mismatchDescription.appendText("was a text node with value that ");
       textMatcher.describeMismatch(value, mismatchDescription);
       return false;
     }
@@ -65,6 +65,6 @@ public class IsJsonText extends AbstractJsonNodeMatcher<TextNode> {
 
   @Override
   public void describeTo(Description description) {
-    description.appendText("a text node ").appendDescriptionOf(textMatcher);
+    description.appendText("a text node with value that ").appendDescriptionOf(textMatcher);
   }
 }

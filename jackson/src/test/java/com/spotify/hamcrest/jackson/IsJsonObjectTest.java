@@ -85,7 +85,7 @@ public class IsJsonObjectTest {
     assertThat(description.toString(), is(
         "{\n"
         + "  ...\n"
-        + "  \"bar\": was a boolean node was <true>\n"
+        + "  \"bar\": was a boolean node with value that was <true>\n"
         + "  ...\n"
         + "}"
     ));
@@ -144,8 +144,8 @@ public class IsJsonObjectTest {
 
     assertThat(description.toString(), is(
         "{\n"
-        + "  \"foo\": is a number node is <1>\n"
-        + "  \"bar\": is a boolean node is <false>\n"
+        + "  \"foo\": is a number node with value that is <1>\n"
+        + "  \"bar\": is a boolean node with value that is <false>\n"
         + "  \"baz\": is {\n"
         + "    \"foo\": is a null node\n"
         + "  }\n"

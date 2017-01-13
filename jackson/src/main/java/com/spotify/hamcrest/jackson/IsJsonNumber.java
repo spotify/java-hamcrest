@@ -79,7 +79,7 @@ public class IsJsonNumber extends AbstractJsonNodeMatcher<NumericNode> {
     if (numberMatcher.matches(number)) {
       return true;
     } else {
-      mismatchDescription.appendText("was a number node ");
+      mismatchDescription.appendText("was a number node with value that ");
       numberMatcher.describeMismatch(number, mismatchDescription);
       return false;
     }
@@ -87,6 +87,6 @@ public class IsJsonNumber extends AbstractJsonNodeMatcher<NumericNode> {
 
   @Override
   public void describeTo(Description description) {
-    description.appendText("a number node ").appendDescriptionOf(numberMatcher);
+    description.appendText("a number node with value that ").appendDescriptionOf(numberMatcher);
   }
 }
