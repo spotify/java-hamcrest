@@ -20,6 +20,7 @@
 
 package com.spotify.hamcrest.jackson;
 
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsAnything.anything;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -41,7 +42,7 @@ public class IsJsonArray extends AbstractJsonNodeMatcher<ArrayNode> {
   }
 
   public static Matcher<JsonNode> jsonArray() {
-    return new IsJsonArray(anything());
+    return new IsJsonArray(is(anything()));
   }
 
   public static Matcher<JsonNode> jsonArray(

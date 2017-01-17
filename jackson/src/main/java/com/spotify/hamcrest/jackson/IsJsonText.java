@@ -40,7 +40,7 @@ public class IsJsonText extends AbstractJsonNodeMatcher<TextNode> {
   }
 
   public static Matcher<JsonNode> jsonText() {
-    return new IsJsonText(anything());
+    return new IsJsonText(is(anything()));
   }
 
   public static Matcher<JsonNode> jsonText(String text) {

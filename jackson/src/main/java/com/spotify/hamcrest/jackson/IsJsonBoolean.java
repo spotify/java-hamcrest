@@ -40,7 +40,7 @@ public class IsJsonBoolean extends AbstractJsonNodeMatcher<BooleanNode> {
   }
 
   public static Matcher<JsonNode> jsonBoolean() {
-    return new IsJsonBoolean(anything());
+    return new IsJsonBoolean(is(anything()));
   }
 
   public static Matcher<JsonNode> jsonBoolean(boolean bool) {

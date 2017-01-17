@@ -113,4 +113,16 @@ public class IsJsonArrayTest {
         "an array node whose elements is ANYTHING"
     ));
   }
+
+  @Test
+  public void testDescriptionForEmptyConstructor() throws Exception {
+    final Matcher<JsonNode> sut = jsonArray();
+
+    final StringDescription description = new StringDescription();
+    sut.describeTo(description);
+
+    assertThat(description.toString(), is(
+        "an array node whose elements is ANYTHING"
+    ));
+  }
 }

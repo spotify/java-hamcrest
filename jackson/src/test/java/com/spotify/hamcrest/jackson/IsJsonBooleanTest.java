@@ -90,4 +90,16 @@ public class IsJsonBooleanTest {
         "a boolean node with value that is <false>"
     ));
   }
+
+  @Test
+  public void testDescriptionForEmptyConstructor() throws Exception {
+    final Matcher<JsonNode> sut = jsonBoolean();
+
+    final StringDescription description = new StringDescription();
+    sut.describeTo(description);
+
+    assertThat(description.toString(), is(
+        "a boolean node with value that is ANYTHING"
+    ));
+  }
 }

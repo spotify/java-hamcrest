@@ -100,4 +100,16 @@ public class IsJsonTextTest {
         "a text node with value that is ANYTHING"
     ));
   }
+
+  @Test
+  public void testDescriptionForEmptyConstructor() throws Exception {
+    final Matcher<JsonNode> sut = jsonText();
+
+    final StringDescription description = new StringDescription();
+    sut.describeTo(description);
+
+    assertThat(description.toString(), is(
+        "a text node with value that is ANYTHING"
+    ));
+  }
 }

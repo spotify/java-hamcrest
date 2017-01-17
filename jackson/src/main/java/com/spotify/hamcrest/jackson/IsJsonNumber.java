@@ -45,7 +45,7 @@ public class IsJsonNumber extends AbstractJsonNodeMatcher<NumericNode> {
 
   public static Matcher<JsonNode> jsonNumber() {
     // Function.identity() doesn't work since types change
-    return new IsJsonNumber(anything(), n -> n);
+    return new IsJsonNumber(is(anything()), n -> n);
   }
 
   public static Matcher<JsonNode> jsonInt(int number) {

@@ -121,4 +121,16 @@ public class IsJsonNumberTest {
         "a number node with value that is <1>"
     ));
   }
+
+  @Test
+  public void testDescriptionForEmptyConstructor() throws Exception {
+    final Matcher<JsonNode> sut = jsonNumber();
+
+    final StringDescription description = new StringDescription();
+    sut.describeTo(description);
+
+    assertThat(description.toString(), is(
+        "a number node with value that is ANYTHING"
+    ));
+  }
 }
