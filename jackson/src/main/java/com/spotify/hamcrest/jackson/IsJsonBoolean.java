@@ -40,7 +40,7 @@ public class IsJsonBoolean extends AbstractJsonNodeMatcher<BooleanNode> {
   }
 
   public static Matcher<JsonNode> jsonBoolean() {
-    return new IsJsonBoolean(anything());
+    return new IsJsonBoolean(is(anything()));
   }
 
   public static Matcher<JsonNode> jsonBoolean(boolean bool) {
@@ -58,7 +58,7 @@ public class IsJsonBoolean extends AbstractJsonNodeMatcher<BooleanNode> {
     if (booleanMatcher.matches(value)) {
       return true;
     } else {
-      mismatchDescription.appendText("was a boolean node ");
+      mismatchDescription.appendText("was a boolean node with value that ");
       booleanMatcher.describeMismatch(value, mismatchDescription);
       return false;
     }
@@ -66,6 +66,6 @@ public class IsJsonBoolean extends AbstractJsonNodeMatcher<BooleanNode> {
 
   @Override
   public void describeTo(Description description) {
-    description.appendText("a boolean node ").appendDescriptionOf(booleanMatcher);
+    description.appendText("a boolean node with value that ").appendDescriptionOf(booleanMatcher);
   }
 }

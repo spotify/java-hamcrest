@@ -94,7 +94,7 @@ public class IsJsonNumberTest {
     sut.describeMismatch(NF.numberNode(2), description);
 
     assertThat(description.toString(), is(
-        "was a number node was <2>"
+        "was a number node with value that was <2>"
     ));
   }
 
@@ -118,7 +118,19 @@ public class IsJsonNumberTest {
     sut.describeTo(description);
 
     assertThat(description.toString(), is(
-        "a number node is <1>"
+        "a number node with value that is <1>"
+    ));
+  }
+
+  @Test
+  public void testDescriptionForEmptyConstructor() throws Exception {
+    final Matcher<JsonNode> sut = jsonNumber();
+
+    final StringDescription description = new StringDescription();
+    sut.describeTo(description);
+
+    assertThat(description.toString(), is(
+        "a number node with value that is ANYTHING"
     ));
   }
 }

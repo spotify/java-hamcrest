@@ -73,7 +73,7 @@ public class IsJsonTextTest {
     sut.describeMismatch(NF.textNode("foo"), description);
 
     assertThat(description.toString(), is(
-        "was a text node was \"foo\""
+        "was a text node with value that was \"foo\""
     ));
   }
 
@@ -97,7 +97,19 @@ public class IsJsonTextTest {
     sut.describeTo(description);
 
     assertThat(description.toString(), is(
-        "a text node is ANYTHING"
+        "a text node with value that is ANYTHING"
+    ));
+  }
+
+  @Test
+  public void testDescriptionForEmptyConstructor() throws Exception {
+    final Matcher<JsonNode> sut = jsonText();
+
+    final StringDescription description = new StringDescription();
+    sut.describeTo(description);
+
+    assertThat(description.toString(), is(
+        "a text node with value that is ANYTHING"
     ));
   }
 }
