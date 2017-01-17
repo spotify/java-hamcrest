@@ -20,17 +20,17 @@ in many of our internal projects.
 * [Prerequisites](#prerequisites)
 * [Code of conduct](#code-of-conduct)
 
+
 ## Download
 
-Download the latest JAR or grab [via Maven][maven-search].
+Each of these modules is published to [Maven Central][maven-search] with the groupId of `com.spotify`.
+The list of modules available is:
 
-```xml
-<dependency>
-  <groupId>com.spotify</groupId>
-  <artifactId>hamcrest</artifactId>
-  <version>1.0.0</version>
-</dependency>
-```
+* hamcrest-pojo
+* hamcrest-jackson
+* hamcrest-optional
+* hamcrest-future
+
 
 ## Getting Started
 
@@ -47,7 +47,7 @@ a fluent style and then match against that structure.  It's optimized
 for very complicated objects with a lot of properties.  When a
 mismatch occurs, the library tries to minimally describe the mismatch.
 
-Here is an example from an actual test case in one of our projects:
+Example:
 
 ```java
 final List<User> users;
@@ -73,8 +73,7 @@ assertThat(users, contains(
 ));
 ```
 
-An actual failure of this test case happened a while ago, and the
-output looks like this:
+Example output:
 
 ```
 Expected:
@@ -106,17 +105,6 @@ item 0: User {
 
 ### JSON matchers
 [![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-jackson.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-jackson)
-
-To include into your Maven build, add this dependency:
-
-```xml
-  <dependency>
-      <groupId>com.spotify</groupId>
-      <artifactId>hamcrest-jackson</artifactId>
-      <version>THEVERSIONYOUWANT</version>
-      <scope>test</scope>
-  </dependency>
-```
 
 Similar to the POJO matchers, the JSON matchers let you describe a
 JSON structure and match against it.
