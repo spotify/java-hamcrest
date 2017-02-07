@@ -107,9 +107,23 @@ item 0: User {
 [![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-jackson.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-jackson)
 
 Similar to the POJO matchers, the JSON matchers let you describe a
-JSON structure and match against it.
+JSON structure and match a string or against it.
 
 ```java
+// You can match a String
+String jsonString = "{" +
+ "  \"foo\": 1," +
+ "  \"bar\": true," +
+ "  \"baz\": {" +
+ "    \"foo\": true" +
+ "  }" +
+ "}"
+
+// You can match a Json String directly
+assertThat("{}", isJsonStringMatching(jsonObject()));
+
+// Or match a Jackson node
+JsonNode json = new ObjectMapper().readTree(jsonString);
 assertThat(json, is(
      jsonObject()
          .where("foo", is(jsonInt(1)))
