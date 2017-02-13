@@ -2,7 +2,7 @@
  * -\-\-
  * hamcrest-jackson
  * --
- * Copyright (C) 2016 Spotify AB
+ * Copyright (C) 2017 Spotify AB
  * --
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import static org.junit.Assert.assertThat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
@@ -108,14 +109,14 @@ public class IsJsonObjectTest {
 
     assertThat(description.toString(), is(
         "{\n"
-        + "  ...\n"
-        + "  \"baz\": {\n"
-        + "    ...\n"
-        + "    \"foo\": was not a null node, but a boolean node\n"
-        + "    ...\n"
-        + "  }\n"
-        + "  ...\n"
-        + "}"
+            + "  ...\n"
+            + "  \"baz\": {\n"
+            + "    ...\n"
+            + "    \"foo\": was not a null node, but a boolean node\n"
+            + "    ...\n"
+            + "  }\n"
+            + "  ...\n"
+            + "}"
     ));
   }
 
@@ -128,6 +129,63 @@ public class IsJsonObjectTest {
 
     assertThat(description.toString(), is(
         "was not an object node, but a boolean node"
+    ));
+  }
+
+  @Test
+  public void testMultipleMismatchesReportsAllMismatches() throws Exception {
+    final Matcher<JsonNode> sut = jsonObject()
+        .where("foo", is(jsonInt(1)))
+        .where("bar", is(jsonInt(2)))
+        .where("baz", is(jsonInt(3)));
+
+    final ObjectNode nestedMismatches = NF.objectNode()
+        .put("foo", -1)
+        .put("bar", "was string")
+        .put("baz", 3);
+
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(nestedMismatches, description);
+
+    assertThat(description.toString(), is(
+        "{\n"
+            + "  ...\n"
+            + "  \"foo\": was a number node with value that was <-1>\n"
+            + "  ...\n"
+            + "  \"bar\": was not a number node, but a string node\n"
+            + "  ...\n"
+            + "}"
+    ));
+  }
+
+  @Test
+  public void testMultipleMismatchesWithNestingReportsAllMismatches() throws Exception {
+    final Matcher<JsonNode> sut = jsonObject()
+        .where("foo", is(jsonObject()
+                             .where("val", jsonBoolean(true))))
+        .where("bar", is(jsonInt(2)))
+        .where("baz", is(jsonInt(3)));
+
+    final ObjectNode nestedMismatches = NF.objectNode()
+        .put("bar", "was string")
+        .put("baz", 3);
+    nestedMismatches.set("foo", NF.objectNode().put("val", false));
+
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(nestedMismatches, description);
+
+    assertThat(description.toString(), is(
+        "{\n"
+            + "  ...\n"
+            + "  \"foo\": {\n"
+            + "    ...\n"
+            + "    \"val\": was a boolean node with value that was <false>\n"
+            + "    ...\n"
+            + "  }\n"
+            + "  ...\n"
+            + "  \"bar\": was not a number node, but a string node\n"
+            + "  ...\n"
+            + "}"
     ));
   }
 
@@ -152,4 +210,5 @@ public class IsJsonObjectTest {
         + "}"
     ));
   }
+
 }
