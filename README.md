@@ -107,7 +107,9 @@ item 0: User {
 [![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-jackson.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-jackson)
 
 Similar to the POJO matchers, the JSON matchers let you describe a
-JSON structure and match a string or against it.
+JSON structure and match against it.
+
+The match can be on a `String` or a jackson `JsonNode`. 
 
 ```java
 // You can match a String
