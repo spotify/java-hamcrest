@@ -109,7 +109,23 @@ item 0: User {
 Similar to the POJO matchers, the JSON matchers let you describe a
 JSON structure and match against it.
 
+The match can be on a `String` or a jackson `JsonNode`. 
+
 ```java
+// You can match a String
+String jsonString = "{" +
+ "  \"foo\": 1," +
+ "  \"bar\": true," +
+ "  \"baz\": {" +
+ "    \"foo\": true" +
+ "  }" +
+ "}"
+
+// You can match a Json String directly
+assertThat("{}", isJsonStringMatching(jsonObject()));
+
+// Or match a Jackson node
+JsonNode json = new ObjectMapper().readTree(jsonString);
 assertThat(json, is(
      jsonObject()
          .where("foo", is(jsonInt(1)))
