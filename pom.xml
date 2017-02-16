@@ -10,7 +10,7 @@
 
   <artifactId>hamcrest</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
 
   <licenses>
     <license>
@@ -46,7 +46,7 @@
   <scm>
     <connection>scm:git:https://github.com/spotify/java-hamcrest.git</connection>
     <developerConnection>scm:git:git@github.com:spotify/java-hamcrest.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>v1.0.1</tag>
     <url>https://github.com/spotify/java-hamcrest</url>
   </scm>
 
