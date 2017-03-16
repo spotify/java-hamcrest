@@ -20,14 +20,15 @@
 
 package com.spotify.hamcrest.jackson;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableMap;
 import com.spotify.hamcrest.util.DescriptionUtils;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -37,28 +38,27 @@ import org.hamcrest.StringDescription;
 
 public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
 
-  private final ImmutableMap<String, Matcher<? super JsonNode>> entryMatchers;
+  private final LinkedHashMap<String, Matcher<? super JsonNode>> entryMatchers;
 
-  private IsJsonObject(final ImmutableMap<String, Matcher<? super JsonNode>> entryMatchers) {
+  private IsJsonObject(final LinkedHashMap<String, Matcher<? super JsonNode>> entryMatchers) {
     super(JsonNodeType.OBJECT);
     this.entryMatchers = Objects.requireNonNull(entryMatchers);
   }
 
   public static IsJsonObject jsonObject() {
-    return new IsJsonObject(ImmutableMap.of());
+    return new IsJsonObject(new LinkedHashMap<>());
   }
 
   public IsJsonObject where(String key, Matcher<? super JsonNode> valueMatcher) {
-    return new IsJsonObject(
-        ImmutableMap.<String, Matcher<? super JsonNode>>builder()
-            .putAll(entryMatchers)
-            .put(key, valueMatcher)
-            .build());
+    final LinkedHashMap<String, Matcher<? super JsonNode>> newMap
+        = new LinkedHashMap<>(entryMatchers);
+    newMap.put(key, valueMatcher);
+    return new IsJsonObject(newMap);
   }
 
   @Override
   protected boolean matchesNode(ObjectNode node, Description mismatchDescription) {
-    List<String> mismatchedKeys = new ArrayList<>();
+    LinkedHashSet<String> mismatchedKeys = new LinkedHashSet<>();
     for (Map.Entry<String, Matcher<? super JsonNode>> entryMatcher : entryMatchers.entrySet()) {
       final String key = entryMatcher.getKey();
       final Matcher<? super JsonNode> valueMatcher = entryMatcher.getValue();
@@ -69,6 +69,7 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
         mismatchedKeys.add(key);
       }
     }
+
     if (!mismatchedKeys.isEmpty()) {
       describeMismatches(node, mismatchDescription, mismatchedKeys);
       return false;
@@ -78,24 +79,38 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
 
   private void describeMismatches(final ObjectNode node,
                                   final Description mismatchDescription,
-                                  final List<String> mismatchedKeys) {
-    mismatchDescription
-        .appendText("{\n")
-        .appendText("  ...\n");
+                                  final LinkedHashSet<String> mismatchedKeys) {
+    checkArgument(!mismatchedKeys.isEmpty(), "mismatchKeys must not be empty");
+    String previousMismatchKey = null;
+    String previousKey = null;
 
-    for (String key : mismatchedKeys) {
-      final Matcher<? super JsonNode> valueMatcher = entryMatchers.get(key);
-      final JsonNode value = node.path(key);
-      describeKey(key, mismatchDescription, d -> valueMatcher.describeMismatch(value, d));
+    mismatchDescription.appendText("{\n");
+
+    for (String key : entryMatchers.keySet()) {
+      if (mismatchedKeys.contains(key)) {
+        // If this is not the first key and the previous key was not a mismatch then add ellipsis
+        if (previousKey != null && !Objects.equals(previousMismatchKey, previousKey)) {
+          mismatchDescription.appendText("  ...\n");
+        }
+
+        final Matcher<?> valueMatcher = entryMatchers.get(key);
+        final JsonNode value = node.path(key);
+        describeKey(key, mismatchDescription, d -> valueMatcher.describeMismatch(value, d));
+        previousMismatchKey = key;
+      }
+      previousKey = key;
     }
 
-    mismatchDescription
-        .appendText("}");
+    // If the last element was not a mismatch then add ellipsis
+    if (!Objects.equals(previousMismatchKey, previousKey)) {
+      mismatchDescription.appendText("  ...\n");
+    }
+
+    mismatchDescription.appendText("}");
   }
 
   @Override
   public void describeTo(Description description) {
-
     description.appendText("{\n");
     for (Map.Entry<String, Matcher<? super JsonNode>> entryMatcher : entryMatchers.entrySet()) {
       final String key = entryMatcher.getKey();
@@ -113,8 +128,9 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
     description.appendText("}");
   }
 
-  static void describeKey(String key, Description mismatchDescription,
-                          Consumer<Description> innerAction) {
+  private static void describeKey(String key,
+                                  Description mismatchDescription,
+                                  Consumer<Description> innerAction) {
     mismatchDescription
         .appendText("  ")
         .appendText(jsonEscapeString(key))
@@ -123,11 +139,9 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
     final Description innerDescription = new StringDescription();
     innerAction.accept(innerDescription);
     DescriptionUtils.indentDescription(mismatchDescription, innerDescription);
-
-    mismatchDescription.appendText("  ...\n");
   }
 
-  static String jsonEscapeString(String string) {
+  private static String jsonEscapeString(String string) {
     return JsonNodeFactory.instance.textNode(string).toString();
   }
 }
