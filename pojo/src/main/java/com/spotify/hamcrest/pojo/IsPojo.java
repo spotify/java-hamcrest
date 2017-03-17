@@ -24,7 +24,9 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
+import com.spotify.hamcrest.util.DescriptionUtils;
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -69,6 +71,8 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
       return false;
     }
 
+    final Map<String, Consumer<Description>> mismatches = new LinkedHashMap<>();
+
     for (Map.Entry<String, Matcher<?>> methodMatcher : methodMatchers.entrySet()) {
       final String methodName = methodMatcher.getKey();
       final Matcher<?> matcher = methodMatcher.getValue();
@@ -76,30 +80,35 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
       final Object returnValue;
       try {
         returnValue = cls.getMethod(methodName).invoke(item);
+        if (!matcher.matches(returnValue)) {
+          mismatches.put(methodName, d -> matcher.describeMismatch(returnValue, d));
+        }
       } catch (IllegalAccessException e) {
         // This only happens if the method has been removed from the class after the code was
         // compiled, so very unlikely...
-        describeMethod(methodName, mismatchDescription, d -> d.appendText("was not accessible"));
-        return false;
+        mismatches.put(methodName, d -> d.appendText("was not accessible"));
       } catch (InvocationTargetException e) {
         final Throwable cause = e.getCause();
-        describeMethod(methodName, mismatchDescription,
+        mismatches.put(methodName,
             d -> d.appendText("threw an exception: ")
                 .appendText(cause.getClass().getCanonicalName())
                 .appendText(": ")
                 .appendText(cause.getMessage()));
-        return false;
       } catch (NoSuchMethodException e) {
-        describeMethod(methodName, mismatchDescription, d -> d.appendText("did not exist"));
-        return false;
-      }
-
-      if (!matcher.matches(returnValue)) {
-        describeMethod(methodName, mismatchDescription,
-            d -> matcher.describeMismatch(returnValue, d));
-        return false;
+        mismatches.put(methodName, d -> d.appendText("did not exist"));
       }
     }
+
+    if (!mismatches.isEmpty()) {
+      mismatchDescription.appendText(cls.getSimpleName()).appendText(" ");
+      DescriptionUtils.describeNestedMismatches(
+          methodMatchers.keySet(),
+          mismatchDescription,
+          mismatches,
+          IsPojo::describeMethod);
+      return false;
+    }
+
     return true;
   }
 
@@ -120,17 +129,9 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
     description.appendText("}");
   }
 
-  private void describeMethod(String name, Description mismatchDescription,
-                              Consumer<Description> innerAction) {
-    mismatchDescription
-        .appendText(cls.getSimpleName())
-        .appendText(" {\n  ...\n  ")
-        .appendText(name)
-        .appendText("(): ");
-    Description innerDescription = new StringDescription();
-    innerAction.accept(innerDescription);
-    indentDescription(mismatchDescription, innerDescription);
-    mismatchDescription.appendText("  ...\n}");
+
+  private static void describeMethod(String name, Description description) {
+    description.appendText(name).appendText("()");
   }
 
   private void indentDescription(Description description, Description innerDescription) {

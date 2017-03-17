@@ -112,14 +112,35 @@ public class IsPojoTest {
 
     assertThat(description.toString(), is(
         "SomeClass {\n"
-        + "  ...\n"
         + "  baz(): SomeClass {\n"
-        + "    ...\n"
         + "    foo(): was <42>\n"
-        + "    ...\n"
         + "  }\n"
         + "  ...\n"
         + "}"
+    ));
+  }
+
+  @Test
+  public void testMismatchFormattingInOrderOfAddition() throws Exception {
+    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+        .where("foo", is(41))
+        .where("baz", is(
+            pojo(SomeClass.class)
+                .where("foo", is(43))
+        ))
+        .withProperty("bar", is("not-bar"));
+
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(new SomeClass(), description);
+
+    assertThat(description.toString(), is(
+        "SomeClass {\n"
+            + "  foo(): was <42>\n"
+            + "  baz(): SomeClass {\n"
+            + "    foo(): was <42>\n"
+            + "  }\n"
+            + "  getBar(): was \"bar\"\n"
+            + "}"
     ));
   }
 
@@ -133,9 +154,7 @@ public class IsPojoTest {
 
     assertThat(description.toString(), is(
         "SomeClass {\n"
-        + "  ...\n"
         + "  throwsException(): threw an exception: java.lang.RuntimeException: Error!\n"
-        + "  ...\n"
         + "}"
     ));
   }
@@ -150,9 +169,7 @@ public class IsPojoTest {
 
     assertThat(description.toString(), is(
         "SomeClass {\n"
-        + "  ...\n"
         + "  doesNotExist(): did not exist\n"
-        + "  ...\n"
         + "}"
     ));
   }
