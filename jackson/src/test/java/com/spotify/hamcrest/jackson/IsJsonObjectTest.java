@@ -75,7 +75,7 @@ public class IsJsonObjectTest {
   }
 
   @Test
-  public void testMismatch() throws Exception {
+  public void lastNodeMismatchHasNoTrailingEllipsisButHasLeading() throws Exception {
     final Matcher<JsonNode> sut = jsonObject()
         .where("foo", is(jsonInt(1)))
         .where("bar", is(jsonBoolean(false)));
@@ -87,8 +87,41 @@ public class IsJsonObjectTest {
         "{\n"
         + "  ...\n"
         + "  \"bar\": was a boolean node with value that was <true>\n"
-        + "  ...\n"
         + "}"
+    ));
+  }
+
+  @Test
+  public void firstNodeMismatchHasNoLeadingEllipsisButWithTrailing() throws Exception {
+    final Matcher<JsonNode> sut = jsonObject()
+        .where("foo", is(jsonInt(1)))
+        .where("bar", is(jsonBoolean(false)));
+
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(NF.objectNode().put("foo", 2).put("bar", false), description);
+
+    assertThat(description.toString(), is(
+        "{\n"
+            + "  \"foo\": was a number node with value that was <2>\n"
+            + "  ...\n"
+            + "}"
+    ));
+  }
+
+  @Test
+  public void allMismatchesWillHaveNoTrailingOrLeadingEllipsis() throws Exception {
+    final Matcher<JsonNode> sut = jsonObject()
+        .where("foo", is(jsonInt(1)))
+        .where("bar", is(jsonBoolean(false)));
+
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(NF.objectNode().put("foo", 2).put("bar", true), description);
+
+    assertThat(description.toString(), is(
+        "{\n"
+            + "  \"foo\": was a number node with value that was <2>\n"
+            + "  \"bar\": was a boolean node with value that was <true>\n"
+            + "}"
     ));
   }
 
@@ -111,11 +144,8 @@ public class IsJsonObjectTest {
         "{\n"
             + "  ...\n"
             + "  \"baz\": {\n"
-            + "    ...\n"
             + "    \"foo\": was not a null node, but a boolean node\n"
-            + "    ...\n"
             + "  }\n"
-            + "  ...\n"
             + "}"
     ));
   }
@@ -141,6 +171,30 @@ public class IsJsonObjectTest {
 
     final ObjectNode nestedMismatches = NF.objectNode()
         .put("foo", -1)
+        .put("bar", 2)
+        .put("baz", "was string");
+
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(nestedMismatches, description);
+
+    assertThat(description.toString(), is(
+        "{\n"
+            + "  \"foo\": was a number node with value that was <-1>\n"
+            + "  ...\n"
+            + "  \"baz\": was not a number node, but a string node\n"
+            + "}"
+    ));
+  }
+
+  @Test
+  public void multipleConsecutiveMismatchesHaveNoEllipsis() throws Exception {
+    final Matcher<JsonNode> sut = jsonObject()
+        .where("foo", is(jsonInt(1)))
+        .where("bar", is(jsonInt(2)))
+        .where("baz", is(jsonInt(3)));
+
+    final ObjectNode nestedMismatches = NF.objectNode()
+        .put("foo", -1)
         .put("bar", "was string")
         .put("baz", 3);
 
@@ -149,10 +203,37 @@ public class IsJsonObjectTest {
 
     assertThat(description.toString(), is(
         "{\n"
-            + "  ...\n"
             + "  \"foo\": was a number node with value that was <-1>\n"
-            + "  ...\n"
             + "  \"bar\": was not a number node, but a string node\n"
+            + "  ...\n"
+            + "}"
+    ));
+  }
+
+  @Test
+  public void nonConsecutiveMismatchesSeparatedByEllipsis() throws Exception {
+    final Matcher<JsonNode> sut = jsonObject()
+        .where("foo", is(jsonInt(1)))
+        .where("bar", is(jsonInt(2)))
+        .where("baz", is(jsonInt(3)))
+        .where("qux", is(jsonInt(4)))
+        .where("quux", is(jsonInt(5)));
+
+    final ObjectNode nestedMismatches = NF.objectNode()
+        .put("foo", -1)
+        .put("bar", "was string")
+        .put("baz", 3)
+        .put("quux", 5);
+
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(nestedMismatches, description);
+
+    assertThat(description.toString(), is(
+        "{\n"
+            + "  \"foo\": was a number node with value that was <-1>\n"
+            + "  \"bar\": was not a number node, but a string node\n"
+            + "  ...\n"
+            + "  \"qux\": was not a number node, but a missing node\n"
             + "  ...\n"
             + "}"
     ));
@@ -176,13 +257,9 @@ public class IsJsonObjectTest {
 
     assertThat(description.toString(), is(
         "{\n"
-            + "  ...\n"
             + "  \"foo\": {\n"
-            + "    ...\n"
             + "    \"val\": was a boolean node with value that was <false>\n"
-            + "    ...\n"
             + "  }\n"
-            + "  ...\n"
             + "  \"bar\": was not a number node, but a string node\n"
             + "  ...\n"
             + "}"
