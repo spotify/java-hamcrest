@@ -20,15 +20,12 @@
 
 package com.spotify.hamcrest.jackson;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.spotify.hamcrest.util.DescriptionUtils;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -58,7 +55,7 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
 
   @Override
   protected boolean matchesNode(ObjectNode node, Description mismatchDescription) {
-    LinkedHashSet<String> mismatchedKeys = new LinkedHashSet<>();
+    LinkedHashMap<String, Consumer<Description>> mismatchedKeys = new LinkedHashMap<>();
     for (Map.Entry<String, Matcher<? super JsonNode>> entryMatcher : entryMatchers.entrySet()) {
       final String key = entryMatcher.getKey();
       final Matcher<? super JsonNode> valueMatcher = entryMatcher.getValue();
@@ -66,47 +63,19 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
       final JsonNode value = node.path(key);
 
       if (!valueMatcher.matches(value)) {
-        mismatchedKeys.add(key);
+        mismatchedKeys.put(key, d -> valueMatcher.describeMismatch(value, d));
       }
     }
 
     if (!mismatchedKeys.isEmpty()) {
-      describeMismatches(node, mismatchDescription, mismatchedKeys);
+      DescriptionUtils.describeNestedMismatches(
+          entryMatchers.keySet(),
+          mismatchDescription,
+          mismatchedKeys,
+          IsJsonObject::describeKey);
       return false;
     }
     return true;
-  }
-
-  private void describeMismatches(final ObjectNode node,
-                                  final Description mismatchDescription,
-                                  final LinkedHashSet<String> mismatchedKeys) {
-    checkArgument(!mismatchedKeys.isEmpty(), "mismatchKeys must not be empty");
-    String previousMismatchKey = null;
-    String previousKey = null;
-
-    mismatchDescription.appendText("{\n");
-
-    for (String key : entryMatchers.keySet()) {
-      if (mismatchedKeys.contains(key)) {
-        // If this is not the first key and the previous key was not a mismatch then add ellipsis
-        if (previousKey != null && !Objects.equals(previousMismatchKey, previousKey)) {
-          mismatchDescription.appendText("  ...\n");
-        }
-
-        final Matcher<?> valueMatcher = entryMatchers.get(key);
-        final JsonNode value = node.path(key);
-        describeKey(key, mismatchDescription, d -> valueMatcher.describeMismatch(value, d));
-        previousMismatchKey = key;
-      }
-      previousKey = key;
-    }
-
-    // If the last element was not a mismatch then add ellipsis
-    if (!Objects.equals(previousMismatchKey, previousKey)) {
-      mismatchDescription.appendText("  ...\n");
-    }
-
-    mismatchDescription.appendText("}");
   }
 
   @Override
@@ -116,10 +85,9 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
       final String key = entryMatcher.getKey();
       final Matcher<? super JsonNode> valueMatcher = entryMatcher.getValue();
 
-      description
-          .appendText("  ")
-          .appendText(jsonEscapeString(key))
-          .appendText(": ");
+      description.appendText("  ");
+      describeKey(key, description);
+      description.appendText(": ");
 
       final Description innerDescription = new StringDescription();
       valueMatcher.describeTo(innerDescription);
@@ -128,17 +96,8 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
     description.appendText("}");
   }
 
-  private static void describeKey(String key,
-                                  Description mismatchDescription,
-                                  Consumer<Description> innerAction) {
-    mismatchDescription
-        .appendText("  ")
-        .appendText(jsonEscapeString(key))
-        .appendText(": ");
-
-    final Description innerDescription = new StringDescription();
-    innerAction.accept(innerDescription);
-    DescriptionUtils.indentDescription(mismatchDescription, innerDescription);
+  private static void describeKey(final String key, final Description mismatchDescription) {
+    mismatchDescription.appendText(jsonEscapeString(key));
   }
 
   private static String jsonEscapeString(String string) {
