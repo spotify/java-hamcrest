@@ -52,7 +52,7 @@ public final class DescriptionUtils {
    *
    * <p>This will print <b>all</b> mismatches occurring in a mismatch list, and properly
    * handle ellipsis (...). Order will also be maintained based on the order of the allKeys
-   * set. To maintian input order, consider using {@link java.util.LinkedHashSet}
+   * set. To maintain input order, consider using {@link java.util.LinkedHashSet}
    * or {@link java.util.LinkedHashMap}
    *
    * <p>This will also handle proper indentation in the case of nesting.
