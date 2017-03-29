@@ -56,6 +56,7 @@
     <module>pojo</module>
     <module>util</module>
     <module>future</module>
+    <module>javaslang</module>
   </modules>
 
   <dependencyManagement>
@@ -89,6 +90,11 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.12</version>
+      </dependency>
+      <dependency>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang</artifactId>
+        <version>2.0.5</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
