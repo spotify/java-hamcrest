@@ -20,15 +20,13 @@
 
 package com.spotify.hamcrest.javaslang;
 
-import javaslang.collection.List;
-import javaslang.control.Either;
-import org.hamcrest.Matcher;
-import org.junit.Test;
-
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
+
+import javaslang.control.Either;
+import org.hamcrest.Matcher;
+import org.junit.Test;
 
 public class EitherMatchersTest {
   @Test

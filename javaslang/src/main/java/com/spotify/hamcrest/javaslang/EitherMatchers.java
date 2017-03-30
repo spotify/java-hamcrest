@@ -36,14 +36,17 @@ public final class EitherMatchers {
   public static <L, R> Matcher<Either<L, R>> right(Matcher<R> matcher) {
     return new TypeSafeDiagnosingMatcher<Either<L, R>>() {
       @Override
-      protected boolean matchesSafely(final Either<L, R> item, final Description mismatchDescription) {
-        return getRight(item, mismatchDescription).matching(matcher, "was right with value ");
+      protected boolean matchesSafely(final Either<L, R> item,
+                                      final Description mismatchDescription) {
+        return getRight(item, mismatchDescription)
+            .matching(matcher, "was right with value ");
       }
 
       private Condition<R> getRight(final Either<L, R> item, final Description mismatch) {
         item.left().peek(l -> mismatch.appendText("was left with value ").appendValue(l));
-        return item.fold(l -> Condition.notMatched(),
-                         r -> Condition.matched(r, mismatch));
+        return item.fold(
+            l -> Condition.notMatched(),
+            r -> Condition.matched(r, mismatch));
       }
 
       @Override
@@ -56,14 +59,17 @@ public final class EitherMatchers {
   public static <L, R> Matcher<Either<L, R>> left(Matcher<L> matcher) {
     return new TypeSafeDiagnosingMatcher<Either<L, R>>() {
       @Override
-      protected boolean matchesSafely(final Either<L, R> item, final Description mismatchDescription) {
-        return getLeft(item, mismatchDescription).matching(matcher, "was left with value ");
+      protected boolean matchesSafely(final Either<L, R> item,
+                                      final Description mismatchDescription) {
+        return getLeft(item, mismatchDescription)
+            .matching(matcher, "was left with value ");
       }
 
       private Condition<L> getLeft(final Either<L, R> item, final Description mismatch) {
         item.right().peek(r -> mismatch.appendText("was right with value ").appendValue(r));
-        return item.fold(l -> Condition.matched(l, mismatch),
-                         r -> Condition.notMatched());
+        return item.fold(
+            l -> Condition.matched(l, mismatch),
+            r -> Condition.notMatched());
       }
 
       @Override

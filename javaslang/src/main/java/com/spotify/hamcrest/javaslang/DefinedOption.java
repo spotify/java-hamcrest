@@ -20,14 +20,14 @@
 
 package com.spotify.hamcrest.javaslang;
 
+import static org.hamcrest.Condition.matched;
+import static org.hamcrest.Condition.notMatched;
+
 import javaslang.control.Option;
 import org.hamcrest.Condition;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-
-import static org.hamcrest.Condition.matched;
-import static org.hamcrest.Condition.notMatched;
 
 class DefinedOption<T> extends TypeSafeDiagnosingMatcher<Option<? extends T>> {
   private final Matcher<T> matcher;
@@ -37,12 +37,14 @@ class DefinedOption<T> extends TypeSafeDiagnosingMatcher<Option<? extends T>> {
   }
 
   @Override
-  protected boolean matchesSafely(final Option<? extends T> item, final Description mismatchDescription) {
+  protected boolean matchesSafely(final Option<? extends T> item,
+                                  final Description mismatchDescription) {
     return extractItem(item, mismatchDescription)
         .matching(matcher, "was defined with value ");
   }
 
-  private Condition<T> extractItem(final Option<? extends T> item, final Description mismatchDescription) {
+  private Condition<T> extractItem(final Option<? extends T> item,
+                                   final Description mismatchDescription) {
     if (item.isEmpty()) {
       mismatchDescription.appendText("was empty");
       return notMatched();

@@ -20,12 +20,6 @@
 
 package com.spotify.hamcrest.javaslang;
 
-import javaslang.control.Option;
-import org.hamcrest.Matcher;
-import org.junit.Test;
-
-import java.util.List;
-
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -33,6 +27,11 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
+
+import java.util.List;
+import javaslang.control.Option;
+import org.hamcrest.Matcher;
+import org.junit.Test;
 
 public class OptionMatchersTest {
 

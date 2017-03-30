@@ -20,27 +20,27 @@
 
 package com.spotify.hamcrest.javaslang;
 
+import static org.hamcrest.core.IsAnything.anything;
+
 import javaslang.control.Option;
 import org.hamcrest.Matcher;
-
-import static org.hamcrest.core.IsAnything.anything;
 
 public final class OptionMatchers {
   private OptionMatchers() {
   }
 
   /**
-   * Returns a matcher matching an {@link Option} that is empty
+   * Returns a matcher matching an {@link Option} that is empty.
    *
    * @param <T> The type of the {@link Option}
-   * @return A matcher matching an {@link Option<T>} that is empty
+   * @return A matcher matching an {@link Option} that is empty
    */
   public static <T> Matcher<Option<T>> emptyOption() {
     return new EmptyOption<>();
   }
 
   /**
-   * Returns a matcher matching an {@link Option} that has a defined value
+   * Returns a matcher matching an {@link Option} that has a defined value.
    * @return A matcher matching an {@link Option} that has a defined value
    */
   public static Matcher<Option<?>> definedOption() {
@@ -49,7 +49,7 @@ public final class OptionMatchers {
 
   /**
    * Returns a matcher matching an {@link Option} defined with value matching matcher.
-   * The matcher will not match an empty {@link Option}
+   * The matcher will not match an empty {@link Option}.
    * @param matcher The matcher for the Option's value
    * @param <T> The type of the {@link Option}
    * @return A matcher matching an {{@link Option} with a value matching matcher

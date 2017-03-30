@@ -20,13 +20,13 @@
 
 package com.spotify.hamcrest.javaslang;
 
-import javaslang.control.Option;
-import org.hamcrest.StringDescription;
-import org.junit.Test;
-
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
+
+import javaslang.control.Option;
+import org.hamcrest.StringDescription;
+import org.junit.Test;
 
 public class DefinedOptionTest {
   private DefinedOption<Integer> sut = new DefinedOption<>(is(42));
