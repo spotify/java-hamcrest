@@ -20,41 +20,35 @@
 
 package com.spotify.hamcrest.javaslang;
 
-import static org.hamcrest.Condition.matched;
-import static org.hamcrest.Condition.notMatched;
-
-import javaslang.control.Option;
+import javaslang.control.Either;
 import org.hamcrest.Condition;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-class DefinedOption<T> extends TypeSafeDiagnosingMatcher<Option<? extends T>> {
-  private final Matcher<T> matcher;
+class IsLeftEither<L> extends TypeSafeDiagnosingMatcher<Either<L, ?>> {
+  private final Matcher<L> matcher;
 
-  DefinedOption(final Matcher<T> matcher) {
+  public IsLeftEither(final Matcher<L> matcher) {
     this.matcher = matcher;
   }
 
   @Override
-  protected boolean matchesSafely(final Option<? extends T> item,
+  protected boolean matchesSafely(final Either<L, ?> item,
                                   final Description mismatchDescription) {
-    return extractItem(item, mismatchDescription)
-        .matching(matcher, "was defined with value ");
+    return getLeft(item, mismatchDescription)
+        .matching(matcher, "was left with value that ");
   }
 
-  private Condition<T> extractItem(final Option<? extends T> item,
-                                   final Description mismatchDescription) {
-    if (item.isEmpty()) {
-      mismatchDescription.appendText("was empty");
-      return notMatched();
-    }
-
-    return matched(item.get(), mismatchDescription);
+  private Condition<L> getLeft(final Either<L, ?> item, final Description mismatch) {
+    item.right().peek(r -> mismatch.appendText("was right with value ").appendValue(r));
+    return item.fold(
+        l -> Condition.matched(l, mismatch),
+        r -> Condition.notMatched());
   }
 
   @Override
   public void describeTo(final Description description) {
-    description.appendText("Option that is defined with value that ").appendDescriptionOf(matcher);
+    description.appendText("a left Either that ").appendDescriptionOf(matcher);
   }
 }

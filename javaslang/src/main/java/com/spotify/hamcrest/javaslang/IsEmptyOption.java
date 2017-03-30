@@ -24,7 +24,7 @@ import javaslang.control.Option;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-class EmptyOption<T> extends TypeSafeDiagnosingMatcher<Option<T>> {
+class IsEmptyOption<T> extends TypeSafeDiagnosingMatcher<Option<T>> {
   @Override
   protected boolean matchesSafely(final Option<T> item, final Description mismatchDescription) {
     return item

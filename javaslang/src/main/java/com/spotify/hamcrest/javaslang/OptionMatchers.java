@@ -36,7 +36,7 @@ public final class OptionMatchers {
    * @return A matcher matching an {@link Option} that is empty
    */
   public static <T> Matcher<Option<T>> emptyOption() {
-    return new EmptyOption<>();
+    return new IsEmptyOption<>();
   }
 
   /**
@@ -44,7 +44,7 @@ public final class OptionMatchers {
    * @return A matcher matching an {@link Option} that has a defined value
    */
   public static Matcher<Option<?>> definedOption() {
-    return new DefinedOption<>(anything());
+    return new IsDefinedOption<>(anything());
   }
 
   /**
@@ -55,6 +55,6 @@ public final class OptionMatchers {
    * @return A matcher matching an {{@link Option} with a value matching matcher
    */
   public static <T> Matcher<Option<? extends T>> definedOption(final Matcher<T> matcher) {
-    return new DefinedOption<>(matcher);
+    return new IsDefinedOption<>(matcher);
   }
 }

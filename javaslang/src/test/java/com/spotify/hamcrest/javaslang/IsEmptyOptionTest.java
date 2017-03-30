@@ -28,31 +28,25 @@ import javaslang.control.Option;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
 
-public class DefinedOptionTest {
-  private DefinedOption<Integer> sut = new DefinedOption<>(is(42));
-  private StringDescription description = new StringDescription();
+public class IsEmptyOptionTest {
+  private IsEmptyOption<Integer> sut = new IsEmptyOption<>();
+  final StringDescription description = new StringDescription();
 
   @Test
   public void testDescription() throws Exception {
     sut.describeTo(description);
-    assertThat(description.toString(), is("Option that is defined with value that is <42>"));
+    assertThat(description.toString(), is("An Option that is empty"));
   }
 
   @Test
-  public void testMismatchFormattingWhenEmpty() throws Exception {
-    sut.describeMismatch(Option.none(), description);
-    assertThat(description.toString(), is("was empty"));
-  }
-
-  @Test
-  public void testMismatchFormattingWithMismatchedValue() throws Exception {
-    sut.describeMismatch(Option.of(0), description);
-    assertThat(description.toString(), is("was defined with value was <0>"));
-  }
-
-  @Test
-  public void testNoMismatchDescriptionForMatch() throws Exception {
+  public void testMismatch() throws Exception {
     sut.describeMismatch(Option.of(42), description);
+    assertThat(description.toString(), is("was defined with value <42>"));
+  }
+
+  @Test
+  public void testNoMismatchDescriptionOnMatch() throws Exception {
+    sut.describeMismatch(Option.none(), description);
     assertThat(description.toString(), is(emptyString()));
   }
 }

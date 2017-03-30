@@ -31,7 +31,7 @@ import org.junit.Test;
 public class EitherMatchersTest {
   @Test
   public void testRightMatcher() throws Exception {
-    Matcher<Either<String, Integer>> sut = EitherMatchers.right(is(42));
+    Matcher<Either<?, Integer>> sut = EitherMatchers.right(is(42));
 
     assertThat(Either.right(42), sut);
     assertThat(Either.right(0), not(sut));
@@ -40,7 +40,7 @@ public class EitherMatchersTest {
 
   @Test
   public void testLeftMatcher() throws Exception {
-    Matcher<Either<String, Integer>> sut = EitherMatchers.left(is("hi"));
+    Matcher<Either<String, ?>> sut = EitherMatchers.left(is("hi"));
 
     assertThat(Either.left("hi"), sut);
     assertThat(Either.left("not hi"), not(sut));

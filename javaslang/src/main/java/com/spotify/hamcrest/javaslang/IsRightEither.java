@@ -20,35 +20,35 @@
 
 package com.spotify.hamcrest.javaslang;
 
-import javaslang.control.Try;
+import javaslang.control.Either;
 import org.hamcrest.Condition;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-class IsSuccessfulTry<T> extends TypeSafeDiagnosingMatcher<Try<T>> {
-  private final Matcher<T> matcher;
+class IsRightEither<R> extends TypeSafeDiagnosingMatcher<Either<?, R>> {
+  private final Matcher<R> matcher;
 
-  public IsSuccessfulTry(final Matcher<T> matcher) {
+  public IsRightEither(final Matcher<R> matcher) {
     this.matcher = matcher;
   }
 
   @Override
-  public void describeTo(final Description description) {
-    description.appendText("Try with value that ").appendDescriptionOf(matcher);
+  protected boolean matchesSafely(final Either<?, R> item,
+                                  final Description mismatchDescription) {
+    return getRight(item, mismatchDescription)
+        .matching(matcher, "was right with value that ");
+  }
+
+  private Condition<R> getRight(final Either<?, R> item, final Description mismatch) {
+    item.left().peek(l -> mismatch.appendText("was left with value ").appendValue(l));
+    return item.fold(
+        l -> Condition.notMatched(),
+        r -> Condition.matched(r, mismatch));
   }
 
   @Override
-  protected boolean matchesSafely(final Try<T> item, final Description mismatchDescription) {
-    return extractItem(item, mismatchDescription).matching(matcher, "was a Try with value that ");
+  public void describeTo(final Description description) {
+    description.appendText("a right Either that ").appendDescriptionOf(matcher);
   }
-
-  private Condition<T> extractItem(final Try<T> item, final Description mismatchDescription) {
-    return item
-        .onFailure(cause ->
-            mismatchDescription.appendText("was failed try with exception ").appendValue(cause))
-        .map(value -> Condition.matched(value, mismatchDescription))
-        .getOrElse(Condition.notMatched());
-  }
-
 }
