@@ -44,7 +44,7 @@ class IsLeftEither<L> extends TypeSafeDiagnosingMatcher<Either<L, ?>> {
     item.right().peek(r -> mismatch.appendText("was right with value ").appendValue(r));
     return item.fold(
         l -> Condition.matched(l, mismatch),
-        r -> Condition.notMatched());
+        r -> Condition.<L>notMatched());
   }
 
   @Override
