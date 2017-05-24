@@ -46,16 +46,26 @@ class ExceptionallyCompletedFuture<T> extends TypeSafeDiagnosingMatcher<Future<T
         mismatchDescription.appendText("a future that was cancelled");
         return false;
       } else {
+        final T value;
         try {
-          mismatchDescription
-              .appendText("a future that completed to a value that was ")
-              .appendValue(future.get());
-          return false;
+          value = future.get();
         } catch (ExecutionException e) {
-          return matcher.matches(e.getCause());
+          final Throwable cause = e.getCause();
+          if (matcher.matches(cause)) {
+            return true;
+          } else {
+            mismatchDescription.appendText("a future completed exceptionally with ");
+            matcher.describeMismatch(cause, mismatchDescription);
+            return false;
+          }
         } catch (InterruptedException e) {
           throw new AssertionError("This should never happen because the future is completed.");
         }
+
+        mismatchDescription
+            .appendText("a future that completed to a value that was ")
+            .appendValue(value);
+        return false;
       }
     } else {
       mismatchDescription.appendText("a future that was not done");

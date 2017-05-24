@@ -20,10 +20,12 @@
 
 package com.spotify.hamcrest.future;
 
+import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static com.spotify.hamcrest.future.FutureMatchers.futureWillCompleteWithExceptionThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.Assert.assertThat;
 
 import com.google.common.util.concurrent.SettableFuture;
@@ -56,6 +58,16 @@ public class ExceptionallyCompletedBlockingFutureTest {
 
     assertThat(description.toString(),
                is("a future that completed to a value that was <2>"));
+  }
+
+  @Test
+  public void testExceptionalMismatchFormatting() throws Exception {
+    final Throwable unexpectedException = new AssertionError("unexpected");
+    final StringDescription description = new StringDescription();
+    SUT.describeMismatch(immediateFailedFuture(unexpectedException), description);
+
+    assertThat(description.toString(),
+               matchesPattern("^a future completed exceptionally with .*AssertionError"));
   }
 
   @Test
