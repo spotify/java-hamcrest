@@ -20,6 +20,7 @@
 
 package com.spotify.hamcrest.jackson;
 
+import static java.util.Objects.requireNonNull;
 import static org.hamcrest.Condition.matched;
 import static org.hamcrest.Condition.notMatched;
 
@@ -55,7 +56,7 @@ public final class IsJsonStringMatching extends TypeSafeDiagnosingMatcher<String
   private final Matcher<JsonNode> matcher;
 
   private IsJsonStringMatching(final Matcher<JsonNode> matcher) {
-    this.matcher = matcher;
+    this.matcher = requireNonNull(matcher, "matcher");
   }
 
   @Override
