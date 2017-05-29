@@ -23,17 +23,39 @@ package com.spotify.hamcrest.javaslang;
 import javaslang.control.Either;
 import org.hamcrest.Matcher;
 
-// TODO: Add documentation
 public final class EitherMatchers {
   private EitherMatchers() {
   }
 
+  /**
+   * Creates a {@link Matcher} that matches an {@link Either} that has right value matching the
+   * matcher.
+   *
+   * <p>For example:
+   * <pre>assertThat(Either.right(42), right(equalTo(42))</pre>
+   *
+   * @param matcher The {@link Matcher} the right value should match
+   * @param <R>     The type of the right value of the {@link Either} to be matched
+   * @return A new {@link Matcher} that matches an {@link Either} that has right value matching the
+   * matcher.
+   */
   public static <R> Matcher<Either<?, R>> right(Matcher<R> matcher) {
     return new IsRightEither<>(matcher);
   }
 
+  /**
+   * Creates a {@link Matcher} that matches an {@link Either} that has left value matching the
+   * matcher.
+   *
+   * <p>For example:
+   * <pre>assertThat(Either.left(42), left(equalTo(42))</pre>
+   *
+   * @param matcher The {@link Matcher} the left value should match
+   * @param <L>     The type of the left value of the {@link Either} to be matched
+   * @return        A new {@link Matcher} that matches an {@link Either} that has left value matching the
+   *                matcher.
+   */
   public static <L> Matcher<Either<L, ?>> left(Matcher<L> matcher) {
     return new IsLeftEither<>(matcher);
   }
-
 }

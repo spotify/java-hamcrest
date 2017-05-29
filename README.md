@@ -17,6 +17,7 @@ in many of our internal projects.
   * [Future matchers](#future-matchers)
     * [raw `Future` matchers](#raw-future-matchers)
     * [Java 8's `CompletableFuture` matchers](#java-8s-completablefuture-matchers)
+  * [Javaslang matchers](#javaslang-matchers)
 * [Prerequisites](#prerequisites)
 * [Code of conduct](#code-of-conduct)
 
@@ -246,6 +247,22 @@ stage never completes! Consider restructuring your tests so that the
 completions returned from the method/class being tested are
 immediately completed (e.g. using MoreExecutors.directExecutor, etc).
 
+### Javaslang Matchers
+[![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-javaslang.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-javaslang)
+
+[Javaslang](http://www.javaslang.io/) is a library inspired by Scala,
+providing elements of functional programming to Java 8. Javaslang has
+an emphasis on immutable values. The `hamcrest-javaslang` package provides
+matchers for various Javaslang value types. Currently, `Try`, `Option`, and `Either`
+are supported.
+
+```java
+assertThat(Try.of(42), successfulTry(equalTo(42)));
+assertThat(Either.right("val"), not(leftTry(anything())));
+assertThat(Option.of(3.14), definedOption(equalTo(3.14)));
+```
+
+Expect more Javaslang values to be supported in the future.
 
 ## Prerequisities
 

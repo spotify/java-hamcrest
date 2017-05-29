@@ -23,18 +23,35 @@ package com.spotify.hamcrest.javaslang;
 import javaslang.control.Try;
 import org.hamcrest.Matcher;
 
-// TODO: Add documentation
 public final class TryMatchers {
 
   private TryMatchers() {
   }
 
+  /**
+   * Creates a {@link Matcher} matching a successful {@link Try} matching the matcher.
+   *
+   * <p>For example:
+   * <pre>assertThat(Try.success(42), successfulTry(equalTo(42))</pre>
+   *
+   * @param matcher A {@link Matcher} to match against the Try's value
+   * @param <T> The type of the {@link Try} value
+   * @return A {@link Matcher} for a successful {@link Try} matching the matcher
+   */
   public static <T> Matcher<Try<T>> successfulTry(Matcher<T> matcher) {
     return new IsSuccessfulTry<>(matcher);
   }
 
+  /**
+   * Creates a {@link Matcher} matching a failed {@link Try}'s cause.
+   *
+   * <p>For example:
+   * <pre>assertThat(Try.failure(new NullPointerException(),
+   *                 failedTry(instanceOf(NullPointerException.class))</pre>
+   * @param matcher A {@link Matcher} to match the {@link Try}'s cause
+   * @return A {@link Matcher} for a failed {@link Try} matching the matcher
+   */
   public static Matcher<Try<?>> failedTry(Matcher<Throwable> matcher) {
     return new IsFailedTry(matcher);
   }
-
 }
