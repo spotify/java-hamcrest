@@ -43,10 +43,17 @@ public class IsJsonNullTest {
   }
 
   @Test
+  public void testLiteral() throws Exception {
+    final Matcher<JsonNode> sut = jsonNull(NF.nullNode());
+
+    assertThat(NF.nullNode(), is(sut));
+  }
+
+  @Test
   public void testMatch() throws Exception {
     final Matcher<JsonNode> sut = jsonNull();
 
-    assertThat(NullNode.getInstance(), is(sut));
+    assertThat(NF.nullNode(), is(sut));
   }
 
   @Test

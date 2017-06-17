@@ -51,6 +51,10 @@ public class IsJsonBoolean extends AbstractJsonNodeMatcher<BooleanNode> {
     return new IsJsonBoolean(booleanMatcher);
   }
 
+  public static Matcher<JsonNode> jsonBoolean(final BooleanNode value) {
+    return jsonBoolean(value.booleanValue());
+  }
+
   @Override
   protected boolean matchesNode(BooleanNode node, Description mismatchDescription) {
     final boolean value = node.asBoolean();

@@ -23,9 +23,12 @@ package com.spotify.hamcrest.jackson;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsAnything.anything;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.NumericNode;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Objects;
 import java.util.function.Function;
 import org.hamcrest.Description;
@@ -48,6 +51,26 @@ public class IsJsonNumber extends AbstractJsonNodeMatcher<NumericNode> {
     return new IsJsonNumber(is(anything()), n -> n);
   }
 
+  public static Matcher<JsonNode> jsonNumber(final NumericNode value) {
+    final JsonParser.NumberType numberType = value.numberType();
+    switch (numberType) {
+      case INT:
+        return jsonInt(value.asInt());
+      case LONG:
+        return jsonLong(value.asLong());
+      case BIG_INTEGER:
+        return jsonBigInteger(value.bigIntegerValue());
+      case FLOAT:
+        return jsonFloat(value.floatValue());
+      case DOUBLE:
+        return jsonDouble(value.doubleValue());
+      case BIG_DECIMAL:
+        return jsonBigDecimal(value.decimalValue());
+      default:
+        throw new UnsupportedOperationException("Unsupported number type " + numberType);
+    }
+  }
+
   public static Matcher<JsonNode> jsonInt(int number) {
     return new IsJsonNumber(is(number), NumericNode::asInt);
   }
@@ -64,12 +87,36 @@ public class IsJsonNumber extends AbstractJsonNodeMatcher<NumericNode> {
     return new IsJsonNumber(numberMatcher, NumericNode::asLong);
   }
 
+  public static Matcher<JsonNode> jsonBigInteger(BigInteger number) {
+    return new IsJsonNumber(is(number), NumericNode::bigIntegerValue);
+  }
+
+  public static Matcher<JsonNode> jsonBigInteger(Matcher<? super BigInteger> numberMatcher) {
+    return new IsJsonNumber(numberMatcher, NumericNode::bigIntegerValue);
+  }
+
+  public static Matcher<JsonNode> jsonFloat(float number) {
+    return new IsJsonNumber(is(number), NumericNode::floatValue);
+  }
+
+  public static Matcher<JsonNode> jsonFloat(Matcher<? super Float> numberMatcher) {
+    return new IsJsonNumber(numberMatcher, NumericNode::floatValue);
+  }
+
   public static Matcher<JsonNode> jsonDouble(double number) {
     return new IsJsonNumber(is(number), NumericNode::asDouble);
   }
 
   public static Matcher<JsonNode> jsonDouble(Matcher<? super Double> numberMatcher) {
     return new IsJsonNumber(numberMatcher, NumericNode::asDouble);
+  }
+
+  public static Matcher<JsonNode> jsonBigDecimal(BigDecimal number) {
+    return new IsJsonNumber(is(number), NumericNode::decimalValue);
+  }
+
+  public static Matcher<JsonNode> jsonBigDecimal(Matcher<? super BigDecimal> numberMatcher) {
+    return new IsJsonNumber(numberMatcher, NumericNode::decimalValue);
   }
 
   @Override

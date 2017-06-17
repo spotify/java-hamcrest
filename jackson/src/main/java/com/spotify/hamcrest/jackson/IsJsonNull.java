@@ -37,6 +37,11 @@ public class IsJsonNull extends AbstractJsonNodeMatcher<NullNode> {
     return INSTANCE;
   }
 
+  @SuppressWarnings("unused")
+  public static Matcher<JsonNode> jsonNull(final NullNode value) {
+    return jsonNull();
+  }
+
   @Override
   protected boolean matchesNode(NullNode node, Description mismatchDescription) {
     return true;

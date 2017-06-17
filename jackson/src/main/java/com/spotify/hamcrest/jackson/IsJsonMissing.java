@@ -37,6 +37,11 @@ public class IsJsonMissing extends AbstractJsonNodeMatcher<MissingNode> {
     return INSTANCE;
   }
 
+  @SuppressWarnings("unused")
+  public static Matcher<JsonNode> jsonMissing(final MissingNode value) {
+    return jsonMissing();
+  }
+
   @Override
   protected boolean matchesNode(MissingNode node, Description mismatchDescription) {
     return true;

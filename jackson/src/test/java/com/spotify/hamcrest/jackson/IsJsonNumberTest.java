@@ -20,7 +20,10 @@
 
 package com.spotify.hamcrest.jackson;
 
+import static com.spotify.hamcrest.jackson.IsJsonNumber.jsonBigDecimal;
+import static com.spotify.hamcrest.jackson.IsJsonNumber.jsonBigInteger;
 import static com.spotify.hamcrest.jackson.IsJsonNumber.jsonDouble;
+import static com.spotify.hamcrest.jackson.IsJsonNumber.jsonFloat;
 import static com.spotify.hamcrest.jackson.IsJsonNumber.jsonInt;
 import static com.spotify.hamcrest.jackson.IsJsonNumber.jsonLong;
 import static com.spotify.hamcrest.jackson.IsJsonNumber.jsonNumber;
@@ -29,6 +32,8 @@ import static org.junit.Assert.assertThat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
@@ -42,6 +47,48 @@ public class IsJsonNumberTest {
     final Matcher<JsonNode> sut = jsonNumber();
 
     assertThat(NF.numberNode(1), is(sut));
+  }
+
+  @Test
+  public void testLiteralInt() throws Exception {
+    final Matcher<JsonNode> sut = jsonNumber(NF.numberNode(1));
+
+    assertThat(NF.numberNode(1), is(sut));
+  }
+
+  @Test
+  public void testLiteralLong() throws Exception {
+    final Matcher<JsonNode> sut = jsonNumber(NF.numberNode(1L));
+
+    assertThat(NF.numberNode(1L), is(sut));
+  }
+
+  @Test
+  public void testLiteralBigInteger() throws Exception {
+    final Matcher<JsonNode> sut = jsonNumber(NF.numberNode(BigInteger.ONE));
+
+    assertThat(NF.numberNode(BigInteger.ONE), is(sut));
+  }
+
+  @Test
+  public void testLiteralFloat() throws Exception {
+    final Matcher<JsonNode> sut = jsonNumber(NF.numberNode(1f));
+
+    assertThat(NF.numberNode(1f), is(sut));
+  }
+
+  @Test
+  public void testLiteralDouble() throws Exception {
+    final Matcher<JsonNode> sut = jsonNumber(NF.numberNode(1d));
+
+    assertThat(NF.numberNode(1d), is(sut));
+  }
+
+  @Test
+  public void testLiteralBigDecimal() throws Exception {
+    final Matcher<JsonNode> sut = jsonNumber(NF.numberNode(BigDecimal.ONE));
+
+    assertThat(NF.numberNode(BigDecimal.ONE), is(sut));
   }
 
   @Test
@@ -73,17 +120,59 @@ public class IsJsonNumberTest {
   }
 
   @Test
-  public void testMatchDoubleValue() throws Exception {
-    final Matcher<JsonNode> sut = jsonDouble(1.0);
+  public void testMatchBigIntegerValue() throws Exception {
+    final Matcher<JsonNode> sut = jsonBigInteger(BigInteger.ONE);
 
-    assertThat(NF.numberNode(1), is(sut));
+    assertThat(NF.numberNode(BigInteger.ONE), is(sut));
+  }
+
+  @Test
+  public void testMatchBigIntegerMatcher() throws Exception {
+    final Matcher<JsonNode> sut = jsonBigInteger(is(BigInteger.ONE));
+
+    assertThat(NF.numberNode(BigInteger.ONE), is(sut));
+  }
+
+  @Test
+  public void testMatchFloatValue() throws Exception {
+    final Matcher<JsonNode> sut = jsonFloat(1f);
+
+    assertThat(NF.numberNode(1f), is(sut));
+  }
+
+  @Test
+  public void testMatchFloatMatcher() throws Exception {
+    final Matcher<JsonNode> sut = jsonFloat(is(1f));
+
+    assertThat(NF.numberNode(1f), is(sut));
+  }
+
+  @Test
+  public void testMatchDoubleValue() throws Exception {
+    final Matcher<JsonNode> sut = jsonDouble(1d);
+
+    assertThat(NF.numberNode(1d), is(sut));
   }
 
   @Test
   public void testMatchDoubleMatcher() throws Exception {
-    final Matcher<JsonNode> sut = jsonDouble(is(1.0));
+    final Matcher<JsonNode> sut = jsonDouble(is(1d));
 
-    assertThat(NF.numberNode(1), is(sut));
+    assertThat(NF.numberNode(1d), is(sut));
+  }
+
+  @Test
+  public void testMatchBigDecimalValue() throws Exception {
+    final Matcher<JsonNode> sut = jsonBigDecimal(BigDecimal.ONE);
+
+    assertThat(NF.numberNode(BigDecimal.ONE), is(sut));
+  }
+
+  @Test
+  public void testMatchBigDecimalMatcher() throws Exception {
+    final Matcher<JsonNode> sut = jsonBigDecimal(is(BigDecimal.ONE));
+
+    assertThat(NF.numberNode(BigDecimal.ONE), is(sut));
   }
 
   @Test

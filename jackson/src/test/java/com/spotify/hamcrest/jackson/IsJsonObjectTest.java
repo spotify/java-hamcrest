@@ -46,6 +46,13 @@ public class IsJsonObjectTest {
   }
 
   @Test
+  public void testLiteral() throws Exception {
+    final Matcher<JsonNode> sut = jsonObject(NF.objectNode().put("a", 1).put("b", false));
+
+    assertThat(NF.objectNode().put("a", 1).put("b", false), is(sut));
+  }
+
+  @Test
   public void testField() throws Exception {
     final Matcher<JsonNode> sut = jsonObject()
         .where("foo", is(jsonInt(1)));
