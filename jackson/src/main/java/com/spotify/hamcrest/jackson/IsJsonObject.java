@@ -21,10 +21,17 @@
 package com.spotify.hamcrest.jackson;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.fasterxml.jackson.databind.node.MissingNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.spotify.hamcrest.util.DescriptionUtils;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +51,46 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
 
   public static IsJsonObject jsonObject() {
     return new IsJsonObject(new LinkedHashMap<>());
+  }
+
+  public static IsJsonObject jsonObject(final ObjectNode objectNode) {
+    final Iterator<Map.Entry<String, JsonNode>> fields = objectNode.fields();
+    final LinkedHashMap<String, Matcher<? super JsonNode>> entryMatchers = new LinkedHashMap<>();
+
+    while (fields.hasNext()) {
+      final Map.Entry<String, JsonNode> field = fields.next();
+      entryMatchers.put(field.getKey(), createNodeMatcher(field.getValue()));
+    }
+
+    return new IsJsonObject(entryMatchers);
+  }
+
+  private static Matcher<JsonNode> createNodeMatcher(final JsonNode value) {
+    final JsonNodeType nodeType = value.getNodeType();
+    switch (nodeType) {
+      case ARRAY:
+        return IsJsonArray.jsonArray((ArrayNode) value);
+      case BINARY:
+        throw new UnsupportedOperationException(
+            "Expected value contains a binary node, which is not implemented.");
+      case BOOLEAN:
+        return IsJsonBoolean.jsonBoolean((BooleanNode) value);
+      case MISSING:
+        return IsJsonMissing.jsonMissing((MissingNode) value);
+      case NULL:
+        return IsJsonNull.jsonNull((NullNode) value);
+      case NUMBER:
+        return IsJsonNumber.jsonNumber((NumericNode) value);
+      case OBJECT:
+        return IsJsonObject.jsonObject((ObjectNode) value);
+      case POJO:
+        throw new UnsupportedOperationException(
+            "Expected value contains a POJO node, which is not implemented.");
+      case STRING:
+        return IsJsonText.jsonText((TextNode) value);
+      default:
+        throw new UnsupportedOperationException("Unsupported node type " + nodeType);
+    }
   }
 
   public IsJsonObject where(String key, Matcher<? super JsonNode> valueMatcher) {

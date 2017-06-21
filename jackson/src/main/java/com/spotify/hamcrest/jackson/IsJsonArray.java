@@ -50,6 +50,10 @@ public class IsJsonArray extends AbstractJsonNodeMatcher<ArrayNode> {
     return new IsJsonArray(elementsMatcher);
   }
 
+  public static Matcher<JsonNode> jsonArray(final ArrayNode value) {
+    return jsonArray(is(ImmutableList.copyOf(value)));
+  }
+
   @Override
   protected boolean matchesNode(ArrayNode node, Description mismatchDescription) {
     final ImmutableList<JsonNode> elements = ImmutableList.copyOf(node);

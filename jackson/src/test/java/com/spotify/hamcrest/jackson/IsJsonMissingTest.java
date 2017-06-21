@@ -43,6 +43,13 @@ public class IsJsonMissingTest {
   }
 
   @Test
+  public void testLiteral() throws Exception {
+    final Matcher<JsonNode> sut = jsonMissing(MissingNode.getInstance());
+
+    assertThat(MissingNode.getInstance(), is(sut));
+  }
+
+  @Test
   public void testMatch() throws Exception {
     final Matcher<JsonNode> sut = jsonMissing();
 

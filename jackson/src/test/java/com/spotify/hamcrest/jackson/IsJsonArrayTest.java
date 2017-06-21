@@ -62,6 +62,13 @@ public class IsJsonArrayTest {
     assertThat(NF.arrayNode(), is(sut));
   }
 
+  @Test
+  public void testLiteral() throws Exception {
+    final Matcher<JsonNode> sut = jsonArray(NF.arrayNode().add(1).add(2));
+
+    assertThat(NF.arrayNode().add(1).add(2), is(sut));
+  }
+
   @SuppressWarnings("unchecked")
   @Test
   public void testContains() throws Exception {

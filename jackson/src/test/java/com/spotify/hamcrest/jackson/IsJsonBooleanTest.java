@@ -42,6 +42,13 @@ public class IsJsonBooleanTest {
   }
 
   @Test
+  public void testLiteral() throws Exception {
+    final Matcher<JsonNode> sut = jsonBoolean(NF.booleanNode(false));
+
+    assertThat(NF.booleanNode(false), is(sut));
+  }
+
+  @Test
   public void testMatchValue() throws Exception {
     final Matcher<JsonNode> sut = jsonBoolean(false);
 

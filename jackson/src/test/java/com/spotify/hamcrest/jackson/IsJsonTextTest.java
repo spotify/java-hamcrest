@@ -45,6 +45,13 @@ public class IsJsonTextTest {
   }
 
   @Test
+  public void testLiteral() throws Exception {
+    final Matcher<JsonNode> sut = jsonText(NF.textNode("foo"));
+
+    assertThat(NF.textNode("foo"), is(sut));
+  }
+
+  @Test
   public void testString() throws Exception {
     final Matcher<JsonNode> sut = jsonText("foo");
 

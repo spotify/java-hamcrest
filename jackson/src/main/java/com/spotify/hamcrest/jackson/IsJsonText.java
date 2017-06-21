@@ -51,6 +51,10 @@ public class IsJsonText extends AbstractJsonNodeMatcher<TextNode> {
     return new IsJsonText(textMatcher);
   }
 
+  public static Matcher<JsonNode> jsonText(final TextNode value) {
+    return jsonText(value.asText());
+  }
+
   @Override
   protected boolean matchesNode(TextNode node, Description mismatchDescription) {
     final String value = node.asText();
