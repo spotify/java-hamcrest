@@ -22,6 +22,7 @@ package com.spotify.hamcrest.pojo;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsAnything.anything;
 
@@ -220,6 +221,21 @@ public class IsPojoTest {
         + "  SomeClass::baz(): SomeClass {\n"
         + "    SomeClass::foo(): was <42>\n"
         + "  }\n"
+        + "}"
+    ));
+  }
+
+  @Test
+  public void testMultipleIdenticalMatches() throws Exception {
+    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+        .where(SomeClass::getBar, is("bar1"))
+        .where(SomeClass::getBar, instanceOf(StringBuffer.class));
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(new SomeClass(), description);
+    assertThat(description.toString(), is(
+        "SomeClass {\n"
+        + "  SomeClass::getBar(): was \"bar\"\n"
+        + "  SomeClass::getBar(): \"bar\" is a java.lang.String\n"
         + "}"
     ));
   }

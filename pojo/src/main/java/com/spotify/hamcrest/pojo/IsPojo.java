@@ -86,26 +86,23 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
       return false;
     }
 
-    final Map<String, Consumer<Description>> mismatches = new LinkedHashMap<>();
+    final Map<Function<A, ?>, Consumer<Description>> mismatches = new LinkedHashMap<>();
 
     methodMatchers.forEach((valueSupplier, matcher) -> {
       try {
         Object value = valueSupplier.apply(item);
         if (!matcher.matches(value)) {
-          mismatches.put(valueSupplier.toString(), d -> matcher.describeMismatch(value, d));
+          mismatches.put(valueSupplier, d -> matcher.describeMismatch(value, d));
         }
       } catch (MethodValueSupplierException mvsex) {
-        mismatches.put(valueSupplier.toString(), d -> d.appendText(mvsex.getDescription()));
+        mismatches.put(valueSupplier, d -> d.appendText(mvsex.getDescription()));
       }
     });
 
     if (!mismatches.isEmpty()) {
       mismatchDescription.appendText(cls.getSimpleName()).appendText(" ");
       DescriptionUtils.describeNestedMismatches(
-          methodMatchers.keySet()
-              .stream()
-              .map(Object::toString)
-              .collect(Collectors.toCollection(LinkedHashSet::new)),
+          methodMatchers.keySet(),
           mismatchDescription,
           mismatches,
           IsPojo::describeMethod);
