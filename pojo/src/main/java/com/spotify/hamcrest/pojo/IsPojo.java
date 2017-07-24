@@ -20,22 +20,17 @@
 
 package com.spotify.hamcrest.pojo;
 
+import static com.spotify.hamcrest.pojo.LambdaUtils.extractLambdaName;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.spotify.hamcrest.util.DescriptionUtils;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,8 +46,8 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
 
   private IsPojo(final Class<A> cls,
                  final ImmutableMap<Function<A, ?>, Matcher<?>> methodMatchers) {
-    this.cls = Objects.requireNonNull(cls);
-    this.methodMatchers = Objects.requireNonNull(methodMatchers);
+    this.cls = requireNonNull(cls);
+    this.methodMatchers = requireNonNull(methodMatchers);
   }
 
   public static <A> IsPojo<A> pojo(Class<A> cls) {
@@ -82,42 +77,6 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
                             .putAll(methodMatchers)
                             .put(valueSupplier, valueMatcher)
                             .build());
-  }
-
-  /**
-   * Method uses serialization trick to extract information about lambda,
-   * to give understandable name in case of mismatch.
-   * @param lambda lambda to extract the name from
-   * @return string describing class and method from which lambda was created,
-   *     or simple {@code toString()} if that fails.
-   */
-  private String extractLambdaName(Object lambda) {
-    try {
-      // serializing lambda:
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ObjectOutputStream oos = new ObjectOutputStream(baos);
-      oos.writeObject(lambda);
-      oos.flush();
-      // replace class name to avoid special handling,
-      // class name has to be identical, otherwise UTF8 serialization handling
-      // will have to be changed too:
-      byte[] hacked = new String(baos.toByteArray(), StandardCharsets.ISO_8859_1)
-          .replace("java.lang.invoke.SerializedLambda",
-                   "com.spotify.hamcrest.pojo.Lambda1")
-          .getBytes(StandardCharsets.ISO_8859_1);
-
-      final Lambda1 deserializedLambda = (Lambda1) new ObjectInputStream(
-          new ByteArrayInputStream(hacked)).readObject();
-      if (deserializedLambda.implClass != null && deserializedLambda.implMethodName != null) {
-        return deserializedLambda.implClass
-                   .substring(deserializedLambda.implClass.lastIndexOf('/') + 1)
-               + "::"
-               + deserializedLambda.implMethodName;
-      }
-    } catch (Exception ignore) {
-      // nop
-    }
-    return lambda.toString();
   }
 
   @Override
@@ -182,87 +141,6 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
         .appendText(
             Joiner.on("\n  ").join(Splitter.on('\n').split(innerDescription.toString())))
         .appendText("\n");
-  }
-
-  private static class MethodValueSupplier<A> implements Function<A, Object> {
-
-    private final String methodName;
-
-    public MethodValueSupplier(String methodName) {
-      this.methodName = methodName;
-    }
-
-    @Override
-    public Object apply(A item) {
-      final Object returnValue;
-      try {
-        returnValue = item.getClass().getMethod(methodName).invoke(item);
-        return returnValue;
-      } catch (IllegalAccessException e) {
-        // This only happens if the method has been removed from the class after the code was
-        // compiled, so very unlikely...
-        throw new MethodValueSupplierException(methodName, "was not accessible");
-      } catch (InvocationTargetException e) {
-        final Throwable cause = e.getCause();
-        throw new MethodValueSupplierException(methodName, "threw an exception: "
-                                                           + cause.getClass().getCanonicalName()
-                                                           + ": "
-                                                           + cause.getMessage());
-      } catch (NoSuchMethodException e) {
-        throw new MethodValueSupplierException(methodName, "did not exist");
-      }
-    }
-
-    @Override
-    public String toString() {
-      return methodName;
-    }
-  }
-
-  private static class NamedLambdaValueSupplier<A> implements Function<A, Object> {
-
-    private final String lambdaName;
-    private final Function<A, ?> delegateFunction;
-
-    public NamedLambdaValueSupplier(String lambdaName, Function<A, ?> delegateFunction) {
-      this.lambdaName = lambdaName;
-      this.delegateFunction = delegateFunction;
-    }
-
-    @Override
-    public Object apply(A input) {
-      return delegateFunction.apply(input);
-    }
-
-    @Override
-    public String toString() {
-      return lambdaName;
-    }
-  }
-
-  private static class MethodValueSupplierException extends RuntimeException {
-
-    private final String methodName;
-    private final String description;
-
-    public MethodValueSupplierException(String methodName, String description) {
-      this.methodName = methodName;
-      this.description = description;
-    }
-
-    public String getMethodName() {
-      return methodName;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-  }
-
-  /**
-   * Adds serialization marker to {@code Function}.
-   */
-  public interface ValueProvider<A, T> extends Function<A, T>, Serializable {
   }
 
 }

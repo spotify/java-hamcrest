@@ -21,24 +21,10 @@
 package com.spotify.hamcrest.pojo;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 /**
- * Class is a copy of {@code java.lang.invoke.SerializedLambda}
- * to deserialize lambda into values instead of back to lambda.<br/>
- * Full class name has to be identical length to {@code java.lang.invoke.SerializedLambda}.
- *
- * @see java.lang.invoke.SerializedLambda
+ * Adds serialization marker to {@code Function}.
  */
-class Lambda1 implements Serializable {
-  private static final long serialVersionUID = 8025925345765570181L;
-  Class<?> capturingClass;
-  String functionalInterfaceClass;
-  String functionalInterfaceMethodName;
-  String functionalInterfaceMethodSignature;
-  String implClass;
-  String implMethodName;
-  String implMethodSignature;
-  int implMethodKind;
-  String instantiatedMethodType;
-  Object[] capturedArgs;
+public interface ValueProvider<A, T> extends Function<A, T>, Serializable {
 }

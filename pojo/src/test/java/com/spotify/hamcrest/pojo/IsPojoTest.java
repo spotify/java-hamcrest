@@ -26,6 +26,8 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsAnything.anything;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import org.hamcrest.StringDescription;
 import org.junit.Rule;
