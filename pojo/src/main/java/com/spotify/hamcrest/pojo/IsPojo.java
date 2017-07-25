@@ -2,7 +2,7 @@
  * -\-\-
  * hamcrest-pojo
  * --
- * Copyright (C) 2016 Spotify AB
+ * Copyright (C) 2017 Spotify AB
  * --
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,20 @@
 
 package com.spotify.hamcrest.pojo;
 
+import static com.spotify.hamcrest.pojo.LambdaUtils.extractLambdaName;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.spotify.hamcrest.util.DescriptionUtils;
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
@@ -38,11 +42,12 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
 
   private final Class<A> cls;
-  private final ImmutableMap<String, Matcher<?>> methodMatchers;
+  private final ImmutableMap<Function<A, ?>, Matcher<?>> methodMatchers;
 
-  private IsPojo(final Class<A> cls, final ImmutableMap<String, Matcher<?>> methodMatchers) {
-    this.cls = Objects.requireNonNull(cls);
-    this.methodMatchers = Objects.requireNonNull(methodMatchers);
+  private IsPojo(final Class<A> cls,
+                 final ImmutableMap<Function<A, ?>, Matcher<?>> methodMatchers) {
+    this.cls = requireNonNull(cls);
+    this.methodMatchers = requireNonNull(methodMatchers);
   }
 
   public static <A> IsPojo<A> pojo(Class<A> cls) {
@@ -50,18 +55,28 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
   }
 
   public IsPojo<A> where(String methodName, Matcher<?> returnValueMatcher) {
-    final ImmutableMap<String, Matcher<?>> newMethodMatchers =
-        ImmutableMap.<String, Matcher<?>>builder()
-            .putAll(methodMatchers)
-            .put(methodName, returnValueMatcher)
-            .build();
+    return whereWithoutTypeSafety(new MethodValueSupplier<>(methodName), returnValueMatcher);
+  }
 
-    return new IsPojo<>(cls, newMethodMatchers);
+  public <T> IsPojo<A> where(ValueProvider<A, T> valueProvider, Matcher<T> valueMatcher) {
+    return whereWithoutTypeSafety(
+        new NamedLambdaValueSupplier<>(
+            extractLambdaName(valueProvider),
+            valueProvider),
+        valueMatcher);
   }
 
   public IsPojo<A> withProperty(String property, Matcher<?> valueMatcher) {
     return where("get" + CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, property),
                  valueMatcher);
+  }
+
+  private IsPojo<A> whereWithoutTypeSafety(Function<A, ?> valueSupplier, Matcher<?> valueMatcher) {
+    return new IsPojo<>(cls,
+                        ImmutableMap.<Function<A, ?>, Matcher<?>>builder()
+                            .putAll(methodMatchers)
+                            .put(valueSupplier, valueMatcher)
+                            .build());
   }
 
   @Override
@@ -71,33 +86,18 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
       return false;
     }
 
-    final Map<String, Consumer<Description>> mismatches = new LinkedHashMap<>();
+    final Map<Function<A, ?>, Consumer<Description>> mismatches = new LinkedHashMap<>();
 
-    for (Map.Entry<String, Matcher<?>> methodMatcher : methodMatchers.entrySet()) {
-      final String methodName = methodMatcher.getKey();
-      final Matcher<?> matcher = methodMatcher.getValue();
-
-      final Object returnValue;
+    methodMatchers.forEach((valueSupplier, matcher) -> {
       try {
-        returnValue = cls.getMethod(methodName).invoke(item);
-        if (!matcher.matches(returnValue)) {
-          mismatches.put(methodName, d -> matcher.describeMismatch(returnValue, d));
+        Object value = valueSupplier.apply(item);
+        if (!matcher.matches(value)) {
+          mismatches.put(valueSupplier, d -> matcher.describeMismatch(value, d));
         }
-      } catch (IllegalAccessException e) {
-        // This only happens if the method has been removed from the class after the code was
-        // compiled, so very unlikely...
-        mismatches.put(methodName, d -> d.appendText("was not accessible"));
-      } catch (InvocationTargetException e) {
-        final Throwable cause = e.getCause();
-        mismatches.put(methodName,
-            d -> d.appendText("threw an exception: ")
-                .appendText(cause.getClass().getCanonicalName())
-                .appendText(": ")
-                .appendText(cause.getMessage()));
-      } catch (NoSuchMethodException e) {
-        mismatches.put(methodName, d -> d.appendText("did not exist"));
+      } catch (MethodValueSupplierException mvsex) {
+        mismatches.put(valueSupplier, d -> d.appendText(mvsex.getDescription()));
       }
-    }
+    });
 
     if (!mismatches.isEmpty()) {
       mismatchDescription.appendText(cls.getSimpleName()).appendText(" ");
@@ -116,16 +116,15 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
   public void describeTo(Description description) {
     description.appendText(cls.getSimpleName()).appendText(" {\n");
 
-    for (Map.Entry<String, Matcher<?>> methodMatcher : methodMatchers.entrySet()) {
-      final String methodName = methodMatcher.getKey();
-      final Matcher<?> matcher = methodMatcher.getValue();
+    methodMatchers.forEach((valueSupplier, matcher) -> {
+      final String methodName = valueSupplier.toString();
       description.appendText("  ").appendText(methodName).appendText("(): ");
 
       Description innerDescription = new StringDescription();
       matcher.describeTo(innerDescription);
 
       indentDescription(description, innerDescription);
-    }
+    });
     description.appendText("}");
   }
 
@@ -140,4 +139,5 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
             Joiner.on("\n  ").join(Splitter.on('\n').split(innerDescription.toString())))
         .appendText("\n");
   }
+
 }

@@ -22,10 +22,14 @@ package com.spotify.hamcrest.pojo;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsAnything.anything;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 import org.hamcrest.StringDescription;
 import org.junit.Rule;
 import org.junit.Test;
@@ -184,6 +188,55 @@ public class IsPojoTest {
 
     assertThat(description.toString(), is(
         "not an instance of com.spotify.hamcrest.pojo.SomeClass"
+    ));
+  }
+
+  @Test
+  public void testTypeSafeMatch() throws Exception {
+    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+        .where(SomeClass::foo, is(42))
+        .where(SomeClass::baz, is(
+            pojo(SomeClass.class)
+                .where(SomeClass::foo, is(42))
+        ));
+
+    assertThat(new SomeClass(), is(sut));
+  }
+
+  @Test
+  public void testTypeSafeMismatch() throws Exception {
+    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+        .where(SomeClass::foo, is(41))
+        .where(SomeClass::baz, is(
+            pojo(SomeClass.class)
+                .where(SomeClass::foo, is(43))
+        ));
+
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(new SomeClass(), description);
+
+    assertThat(description.toString(), is(
+        "SomeClass {\n"
+        + "  SomeClass::foo(): was <42>\n"
+        + "  SomeClass::baz(): SomeClass {\n"
+        + "    SomeClass::foo(): was <42>\n"
+        + "  }\n"
+        + "}"
+    ));
+  }
+
+  @Test
+  public void testMultipleIdenticalMatches() throws Exception {
+    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+        .where(SomeClass::getBar, is("bar1"))
+        .where(SomeClass::getBar, instanceOf(StringBuffer.class));
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(new SomeClass(), description);
+    assertThat(description.toString(), is(
+        "SomeClass {\n"
+        + "  SomeClass::getBar(): was \"bar\"\n"
+        + "  SomeClass::getBar(): \"bar\" is a java.lang.String\n"
+        + "}"
     ));
   }
 }

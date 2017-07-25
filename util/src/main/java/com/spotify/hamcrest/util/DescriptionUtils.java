@@ -77,18 +77,18 @@ public final class DescriptionUtils {
    *                       which will write the describe the mismatch for that key
    * @param describeKey A {@link BiConsumer} used to describe the key
    */
-  public static void describeNestedMismatches(
-      Set<String> allKeys,
+  public static <T> void describeNestedMismatches(
+      Set<T> allKeys,
       Description mismatchDescription,
-      Map<String, Consumer<Description>> mismatchedKeys,
+      Map<T, Consumer<Description>> mismatchedKeys,
       BiConsumer<String, Description> describeKey) {
     checkArgument(!mismatchedKeys.isEmpty(), "mismatchKeys must not be empty");
-    String previousMismatchKey = null;
-    String previousKey = null;
+    T previousMismatchKey = null;
+    T previousKey = null;
 
     mismatchDescription.appendText("{\n");
 
-    for (String key : allKeys) {
+    for (T key : allKeys) {
       if (mismatchedKeys.containsKey(key)) {
         // If this is not the first key and the previous key was not a mismatch then add ellipsis
         if (previousKey != null && !Objects.equals(previousMismatchKey, previousKey)) {
@@ -113,13 +113,13 @@ public final class DescriptionUtils {
     mismatchDescription.appendText("}");
   }
 
-  private static void describeMismatchForKey(String key,
-                                             Description mismatchDescription,
-                                             BiConsumer<String, Description> describeKey,
-                                             Consumer<Description> innerAction) {
+  private static <T> void describeMismatchForKey(T key,
+                                                 Description mismatchDescription,
+                                                 BiConsumer<String, Description> describeKey,
+                                                 Consumer<Description> innerAction) {
 
     mismatchDescription.appendText("  ");
-    describeKey.accept(key, mismatchDescription);
+    describeKey.accept(String.valueOf(key), mismatchDescription);
     mismatchDescription.appendText(": ");
 
     final Description innerDescription = new StringDescription();
