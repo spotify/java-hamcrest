@@ -114,9 +114,9 @@ public final class DescriptionUtils {
   }
 
   private static <T> void describeMismatchForKey(T key,
-                                             Description mismatchDescription,
-                                             BiConsumer<String, Description> describeKey,
-                                             Consumer<Description> innerAction) {
+                                                 Description mismatchDescription,
+                                                 BiConsumer<String, Description> describeKey,
+                                                 Consumer<Description> innerAction) {
 
     mismatchDescription.appendText("  ");
     describeKey.accept(String.valueOf(key), mismatchDescription);

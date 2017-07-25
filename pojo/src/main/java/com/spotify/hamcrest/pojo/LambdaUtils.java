@@ -35,7 +35,7 @@ final class LambdaUtils {
    * @return string describing class and method from which lambda was created,
    *     or simple {@code toString()} if that fails.
    */
-  public static String extractLambdaName(Object lambda) {
+  public static <A, T> String extractLambdaName(ValueProvider<A, T> lambda) {
     requireNonNull(lambda);
     try {
       SerializedLambda serializedLambda = toSerializedLambda(lambda);
