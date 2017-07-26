@@ -23,46 +23,43 @@ package com.spotify.hamcrest.pojo;
 import static java.util.Objects.requireNonNull;
 
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
 final class LambdaUtils {
+
+  private LambdaUtils() {
+  }
+
   /**
    * Method uses serialization trick to extract information about lambda,
    * to give understandable name in case of mismatch.
+   *
    * @param lambda lambda to extract the name from
-   * @return string describing class and method from which lambda was created,
-   *     or simple {@code toString()} if that fails.
+   * @return a serialized version of the lambda, containing useful information for introspection
    */
-  public static <A, T> String extractLambdaName(ValueProvider<A, T> lambda) {
+  static SerializedLambda serializeLambda(final Object lambda) {
     requireNonNull(lambda);
-    try {
-      SerializedLambda serializedLambda = toSerializedLambda(lambda);
-      return serializedLambda.getImplClass()
-                 .substring(serializedLambda.getImplClass().lastIndexOf('/') + 1)
-             + "::"
-             + serializedLambda.getImplMethodName();
-    } catch (Exception ignore) {
-      ignore.printStackTrace();
-      // nop
-    }
-    return lambda.toString();
-  }
 
-  private static SerializedLambda toSerializedLambda(Object lambda) throws Exception {
-    Method writeReplace = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
-      @Override
-      public Method run() throws Exception {
+    final Method writeReplace;
+    try {
+      writeReplace = AccessController.doPrivileged((PrivilegedExceptionAction<Method>) () -> {
         Method method = lambda.getClass().getDeclaredMethod("writeReplace");
         method.setAccessible(true);
         return method;
-      }
-    });
-    SerializedLambda serializedLambda = (SerializedLambda) writeReplace.invoke(lambda);
-    return serializedLambda;
-  }
+      });
+    } catch (PrivilegedActionException e) {
+      throw new IllegalStateException("Cannot serialize lambdas in unprivileged context", e);
+    }
 
-  private LambdaUtils() {
+    try {
+      return (SerializedLambda) writeReplace.invoke(lambda);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      throw new IllegalStateException(
+          "Could not serialize as a lambda (is it a lambda?): " + lambda, e);
+    }
   }
 }
