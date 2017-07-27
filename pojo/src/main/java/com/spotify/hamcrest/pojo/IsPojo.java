@@ -20,7 +20,7 @@
 
 package com.spotify.hamcrest.pojo;
 
-import static com.spotify.hamcrest.pojo.LambdaUtils.extractLambdaName;
+import static com.spotify.hamcrest.pojo.LambdaUtils.serializeLambda;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.CaseFormat;
@@ -29,11 +29,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.spotify.hamcrest.util.DescriptionUtils;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
@@ -61,7 +59,7 @@ public class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
   public <T> IsPojo<A> where(ValueProvider<A, T> valueProvider, Matcher<T> valueMatcher) {
     return whereWithoutTypeSafety(
         new NamedLambdaValueSupplier<>(
-            extractLambdaName(valueProvider),
+            serializeLambda(valueProvider).getImplMethodName(),
             valueProvider),
         valueMatcher);
   }

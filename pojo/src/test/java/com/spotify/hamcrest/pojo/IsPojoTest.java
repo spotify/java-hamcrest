@@ -27,9 +27,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsAnything.anything;
 
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 import org.hamcrest.StringDescription;
 import org.junit.Rule;
 import org.junit.Test;
@@ -217,9 +214,9 @@ public class IsPojoTest {
 
     assertThat(description.toString(), is(
         "SomeClass {\n"
-        + "  SomeClass::foo(): was <42>\n"
-        + "  SomeClass::baz(): SomeClass {\n"
-        + "    SomeClass::foo(): was <42>\n"
+        + "  foo(): was <42>\n"
+        + "  baz(): SomeClass {\n"
+        + "    foo(): was <42>\n"
         + "  }\n"
         + "}"
     ));
@@ -234,8 +231,8 @@ public class IsPojoTest {
     sut.describeMismatch(new SomeClass(), description);
     assertThat(description.toString(), is(
         "SomeClass {\n"
-        + "  SomeClass::getBar(): was \"bar\"\n"
-        + "  SomeClass::getBar(): \"bar\" is a java.lang.String\n"
+        + "  getBar(): was \"bar\"\n"
+        + "  getBar(): \"bar\" is a java.lang.String\n"
         + "}"
     ));
   }
