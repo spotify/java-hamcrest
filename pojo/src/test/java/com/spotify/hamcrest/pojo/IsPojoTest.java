@@ -22,8 +22,11 @@ package com.spotify.hamcrest.pojo;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
 import static org.hamcrest.core.IsAnything.anything;
 
 import java.math.BigInteger;
@@ -136,12 +139,12 @@ public class IsPojoTest {
 
     assertThat(description.toString(), is(
         "SomeClass {\n"
-            + "  foo(): was <42>\n"
-            + "  baz(): SomeClass {\n"
-            + "    foo(): was <42>\n"
-            + "  }\n"
-            + "  getBar(): was \"bar\"\n"
-            + "}"
+        + "  foo(): was <42>\n"
+        + "  baz(): SomeClass {\n"
+        + "    foo(): was <42>\n"
+        + "  }\n"
+        + "  getBar(): was \"bar\"\n"
+        + "}"
     ));
   }
 
@@ -235,5 +238,15 @@ public class IsPojoTest {
         + "  getBar(): \"bar\" is a java.lang.String\n"
         + "}"
     ));
+  }
+
+  @Test
+  public void testNonTrivialLambdas() throws Exception {
+    expectedException.expect(both(isA(IllegalArgumentException.class))
+        .and(hasProperty("message", is("The supplied lambda is not a direct method reference"))));
+    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+        .where(s -> s.getBar().intern(), is("bar1"));
+    final StringDescription description = new StringDescription();
+    sut.describeMismatch(new SomeClass(), description);
   }
 }
