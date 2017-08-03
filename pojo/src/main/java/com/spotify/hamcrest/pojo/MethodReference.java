@@ -20,21 +20,20 @@
 
 package com.spotify.hamcrest.pojo;
 
-class MethodValueSupplierException extends RuntimeException {
+import java.io.Serializable;
 
-  private final String methodName;
-  private final String description;
+/**
+ * An interface for serializable method references. It is only valid to construct instances of this
+ * interface with method references such as {@code Foo::bar}.
+ */
+@FunctionalInterface
+public interface MethodReference<A, R> extends Serializable {
 
-  public MethodValueSupplierException(String methodName, String description) {
-    this.methodName = methodName;
-    this.description = description;
-  }
-
-  public String getMethodName() {
-    return methodName;
-  }
-
-  public String getDescription() {
-    return description;
-  }
+  /**
+   * Applies this method reference to the specified owning object.
+   *
+   * @param self the owning object
+   * @return the method result
+   */
+  R apply(A self) throws Exception;
 }

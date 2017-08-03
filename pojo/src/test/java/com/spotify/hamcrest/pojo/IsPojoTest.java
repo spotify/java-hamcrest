@@ -25,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.hamcrest.core.IsAnything.anything;
@@ -227,26 +228,20 @@ public class IsPojoTest {
 
   @Test
   public void testMultipleIdenticalMatches() throws Exception {
-    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+    expectedException.expect(both(isA(IllegalArgumentException.class))
+        .and(hasProperty("message", startsWith("Multiple entries with same key: "))));
+
+    pojo(SomeClass.class)
         .where(SomeClass::getBar, is("bar1"))
         .where(SomeClass::getBar, instanceOf(StringBuffer.class));
-    final StringDescription description = new StringDescription();
-    sut.describeMismatch(new SomeClass(), description);
-    assertThat(description.toString(), is(
-        "SomeClass {\n"
-        + "  getBar(): was \"bar\"\n"
-        + "  getBar(): \"bar\" is a java.lang.String\n"
-        + "}"
-    ));
   }
 
   @Test
   public void testNonTrivialLambdas() throws Exception {
     expectedException.expect(both(isA(IllegalArgumentException.class))
         .and(hasProperty("message", is("The supplied lambda is not a direct method reference"))));
-    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+
+    pojo(SomeClass.class)
         .where(s -> s.getBar().intern(), is("bar1"));
-    final StringDescription description = new StringDescription();
-    sut.describeMismatch(new SomeClass(), description);
   }
 }
