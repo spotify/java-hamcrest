@@ -106,6 +106,8 @@
         <plugin>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <configuration>
+            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+            <testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
             <violationSeverity>warning</violationSeverity>
           </configuration>
