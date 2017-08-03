@@ -71,24 +71,25 @@ public final class DescriptionUtils {
    *   }
    * </pre>
    *
-   * @param allKeys {@link Set} of all keys expecting to match
+   * @param allKeys             {@link Set} of all keys expecting to match
    * @param mismatchDescription The {@link Description} to write the output to
-   * @param mismatchedKeys A {@link Map} of all keys mismatched. The value is a {@link Consumer}
-   *                       which will write the describe the mismatch for that key
-   * @param describeKey A {@link BiConsumer} used to describe the key
+   * @param mismatchedKeys      A {@link Map} of all keys mismatched. The value is a
+   *                            {@link Consumer} which will write the describe the mismatch for that
+   *                            key
+   * @param describeKey         A {@link BiConsumer} used to describe the key
    */
-  public static <T> void describeNestedMismatches(
-      Set<T> allKeys,
+  public static void describeNestedMismatches(
+      Set<String> allKeys,
       Description mismatchDescription,
-      Map<T, Consumer<Description>> mismatchedKeys,
+      Map<String, Consumer<Description>> mismatchedKeys,
       BiConsumer<String, Description> describeKey) {
     checkArgument(!mismatchedKeys.isEmpty(), "mismatchKeys must not be empty");
-    T previousMismatchKey = null;
-    T previousKey = null;
+    String previousMismatchKey = null;
+    String previousKey = null;
 
     mismatchDescription.appendText("{\n");
 
-    for (T key : allKeys) {
+    for (String key : allKeys) {
       if (mismatchedKeys.containsKey(key)) {
         // If this is not the first key and the previous key was not a mismatch then add ellipsis
         if (previousKey != null && !Objects.equals(previousMismatchKey, previousKey)) {
@@ -113,10 +114,11 @@ public final class DescriptionUtils {
     mismatchDescription.appendText("}");
   }
 
-  private static <T> void describeMismatchForKey(T key,
-                                                 Description mismatchDescription,
-                                                 BiConsumer<String, Description> describeKey,
-                                                 Consumer<Description> innerAction) {
+  private static void describeMismatchForKey(
+      String key,
+      Description mismatchDescription,
+      BiConsumer<String, Description> describeKey,
+      Consumer<Description> innerAction) {
 
     mismatchDescription.appendText("  ");
     describeKey.accept(String.valueOf(key), mismatchDescription);
