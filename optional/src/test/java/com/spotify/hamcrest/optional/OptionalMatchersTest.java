@@ -46,8 +46,8 @@ public class OptionalMatchersTest {
   }
 
   /**
-   * Ensure that OptionalMatchers.hasValue(matcher) can be used with Matchers of other generic
-   * types. This test is really verified at compile-time and not run-time.
+   * Ensure that OptionalMatchers.optionalWithValue(matcher) can be used with Matchers of other
+   * generic types. This test is really verified at compile-time and not run-time.
    */
   @Test
   public void testGenerics() {

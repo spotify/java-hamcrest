@@ -167,16 +167,16 @@ Optional type so you don't have to unpack the Optional in your tests.
 
 ```java
 final Optional<String> response = methodUnderTest();
-assertThat(response, hasValue(equalTo("foo"));
+assertThat(response, is(optionalWithValue(equalTo("foo")));
 
 final Optional<Collection<Foo>> col = anotherMethod();
-assertThat(response, hasValue(containsInAnyOrder(...)));
+assertThat(response, is(optionalWithValue(containsInAnyOrder(...))));
 
 // or if you only care that the Optional is non-empty:
-assertThat(response, hasValue());
+assertThat(response, is(optionalWithValue()));
 
 // or if you expect an empty Optional:
-assertThat(response, isEmpty());
+assertThat(response, is(emptyOptional()));
 ```
 
 ### Future matchers
