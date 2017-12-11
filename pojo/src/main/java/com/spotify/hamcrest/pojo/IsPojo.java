@@ -64,7 +64,7 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
     return where(
         methodName,
         self -> {
-          final Method method = self.getClass().getDeclaredMethod(methodName);
+          final Method method = methodWithName(methodName, self);
           method.setAccessible(true);
           @SuppressWarnings("unchecked") final T returnValue = (T) method.invoke(self);
           return returnValue;
@@ -93,6 +93,14 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
     return toBuilder()
         .methodHandler(methodName, MethodHandler.create(valueExtractor, matcher))
         .build();
+  }
+
+  private Method methodWithName(String methodName, A self) throws NoSuchMethodException {
+    try {
+      return self.getClass().getDeclaredMethod(methodName);
+    } catch (NoSuchMethodException e) {
+      return self.getClass().getMethod(methodName);
+    }
   }
 
   public IsPojo<A> withProperty(String property, Matcher<?> valueMatcher) {

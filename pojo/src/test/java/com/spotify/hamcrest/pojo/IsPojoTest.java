@@ -244,4 +244,20 @@ public class IsPojoTest {
     pojo(SomeClass.class)
         .where(s -> s.getBar().intern(), is("bar1"));
   }
+
+  @Test
+  public void testPrivateMethodInClass() throws Exception {
+    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+        .where("privateInClass", is(true));
+
+    assertThat(new SomeClass(), is(sut));
+  }
+
+  @Test
+  public void testMethodInSuperClass() throws Exception {
+    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+        .where("methodInParent", is(true));
+
+    assertThat(new SomeClass(), is(sut));
+  }
 }
