@@ -18,6 +18,7 @@ in many of our internal projects.
     * [raw `Future` matchers](#raw-future-matchers)
     * [Java 8's `CompletableFuture` matchers](#java-8s-completablefuture-matchers)
 * [Prerequisites](#prerequisites)
+* [Releasing](#releasing)
 * [Code of conduct](#code-of-conduct)
 
 
@@ -253,6 +254,17 @@ Any platform that has the following
 
 * Java 8+
 * Maven 3 (for compiling)
+
+
+## Releasing
+
+This plugin is uploaded to Maven Central via the Maven release plugin. You'll need
+credentials for Spotify's Sonatype account in your `~/.m2/settings.xml` as well as a GPG key to
+sign the artifacts.
+
+```
+mvn -Dgpg.keyname=<KEY-ID> release:prepare release:perform
+```
 
 
 ## Code of conduct
