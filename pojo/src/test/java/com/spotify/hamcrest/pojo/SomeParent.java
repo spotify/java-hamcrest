@@ -2,7 +2,7 @@
  * -\-\-
  * hamcrest-pojo
  * --
- * Copyright (C) 2016 Spotify AB
+ * Copyright (C) 2016 - 2017 Spotify AB
  * --
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,25 +20,8 @@
 
 package com.spotify.hamcrest.pojo;
 
-class SomeClass extends SomeParent {
-
-  public int foo() {
-    return 42;
-  }
-
-  public String getBar() {
-    return "bar";
-  }
-
-  public SomeClass baz() {
-    return new SomeClass();
-  }
-
-  private boolean privateInClass() {
+class SomeParent {
+  public boolean methodInParent() {
     return true;
-  }
-
-  public String throwsException() {
-    throw new RuntimeException("Error!");
   }
 }
