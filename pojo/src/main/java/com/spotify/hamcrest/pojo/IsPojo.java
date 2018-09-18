@@ -251,8 +251,8 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
       final Class<?> implClass = Class.forName(serializedLambda.getImplClass().replace('/', '.'));
       if (stream(implClass.getMethods())
           .noneMatch(m ->
-              m.getName().equals(serializedLambda.getImplMethodName()) &&
-              !m.isSynthetic())) {
+              m.getName().equals(serializedLambda.getImplMethodName())
+              && !m.isSynthetic())) {
         throw new IllegalArgumentException("The supplied lambda is not a direct method reference");
       }
     } catch (final ClassNotFoundException e) {
