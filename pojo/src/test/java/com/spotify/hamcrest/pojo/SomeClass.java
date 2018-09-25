@@ -20,6 +20,8 @@
 
 package com.spotify.hamcrest.pojo;
 
+import java.util.ArrayList;
+
 class SomeClass extends SomeParent {
 
   public int foo() {
@@ -40,5 +42,10 @@ class SomeClass extends SomeParent {
 
   public String throwsException() {
     throw new RuntimeException("Error!");
+  }
+
+  @Override
+  public ArrayList<String> covariantlyOverriddenMethod() {
+    return new ArrayList<>();
   }
 }

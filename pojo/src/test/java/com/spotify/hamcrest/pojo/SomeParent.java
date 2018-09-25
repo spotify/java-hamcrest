@@ -20,8 +20,15 @@
 
 package com.spotify.hamcrest.pojo;
 
+import java.util.Collections;
+import java.util.List;
+
 class SomeParent {
   public boolean methodInParent() {
     return true;
+  }
+
+  public List<String> covariantlyOverriddenMethod() {
+    return Collections.emptyList();
   }
 }
