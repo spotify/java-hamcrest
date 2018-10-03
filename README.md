@@ -165,7 +165,7 @@ You can match a JSON Array by combining with existing Hamcrest collection Matche
 ```java
 String jsonArrayString = "["foo", "bar"]";
 JsonNode json = new ObjectMapper().readTree(jsonArrayString);
-assertThat(json, is(JsonArray(contains(jsonText("foo"), jsonText("bar")))));
+assertThat(json, is(jsonArray(contains(jsonText("foo"), jsonText("bar")))));
 ```
 
 ### java.util.Optional matchers
