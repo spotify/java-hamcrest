@@ -20,6 +20,7 @@
 
 package com.spotify.hamcrest.pojo;
 
+import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 
 import com.google.auto.value.AutoValue;
@@ -246,28 +247,18 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
   }
 
   private static void ensureDirectMethodReference(final SerializedLambda serializedLambda) {
-    final Method targetMethod;
     try {
       final Class<?> implClass = Class.forName(serializedLambda.getImplClass().replace('/', '.'));
-      targetMethod = findMethodByName(implClass, serializedLambda.getImplMethodName());
-    } catch (NoSuchMethodException | ClassNotFoundException e) {
-      throw new IllegalStateException(
-          "serializeLambda returned a SerializedLambda pointing to an invalid class/method", e);
-    }
-
-    if (targetMethod.isSynthetic()) {
-      throw new IllegalArgumentException("The supplied lambda is not a direct method reference");
-    }
-  }
-
-  private static Method findMethodByName(final Class<?> cls, final String methodName)
-      throws NoSuchMethodException {
-    for (final Method method : cls.getDeclaredMethods()) {
-      if (method.getName().equals(methodName)) {
-        return method;
+      if (stream(implClass.getMethods())
+          .noneMatch(m ->
+              m.getName().equals(serializedLambda.getImplMethodName())
+              && !m.isSynthetic())) {
+        throw new IllegalArgumentException("The supplied lambda is not a direct method reference");
       }
+    } catch (final ClassNotFoundException e) {
+      throw new IllegalStateException(
+          "serializeLambda returned a SerializedLambda pointing to an invalid class", e);
     }
-    throw new NoSuchMethodException("No method " + methodName + " on " + cls);
   }
 
   @AutoValue

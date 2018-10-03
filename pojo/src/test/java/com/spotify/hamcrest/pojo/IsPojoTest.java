@@ -24,6 +24,7 @@ import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.Is.is;
@@ -257,6 +258,14 @@ public class IsPojoTest {
   public void testMethodInSuperClass() throws Exception {
     final IsPojo<SomeClass> sut = pojo(SomeClass.class)
         .where("methodInParent", is(true));
+
+    assertThat(new SomeClass(), is(sut));
+  }
+
+  @Test
+  public void testCovariantMethodOverriding() {
+    final IsPojo<SomeClass> sut = pojo(SomeClass.class)
+        .where(SomeClass::covariantlyOverriddenMethod, hasSize(0));
 
     assertThat(new SomeClass(), is(sut));
   }
