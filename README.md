@@ -160,6 +160,14 @@ but:
 }
 ```
 
+You can match a JSON Array by combining with existing Hamcrest collection Matchers:
+
+```java
+String jsonArrayString = "["foo", "bar"]";
+JsonNode json = new ObjectMapper().readTree(jsonArrayString);
+assertThat(json, is(JsonArray(contains(jsonText("foo"), jsonText("bar")))));
+```
+
 ### java.util.Optional matchers
 [![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-optional.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-optional)
 
