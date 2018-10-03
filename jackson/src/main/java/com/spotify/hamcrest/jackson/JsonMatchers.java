@@ -42,7 +42,7 @@ public final class JsonMatchers {
   }
 
   public static Matcher<JsonNode> jsonArray(
-      Matcher<? super Collection<? super JsonNode>> elementsMatcher) {
+      Matcher<? super Collection<? extends JsonNode>> elementsMatcher) {
     return IsJsonArray.jsonArray(elementsMatcher);
   }
 

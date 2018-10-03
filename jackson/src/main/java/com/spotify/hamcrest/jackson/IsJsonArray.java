@@ -46,7 +46,7 @@ public class IsJsonArray extends AbstractJsonNodeMatcher<ArrayNode> {
   }
 
   public static Matcher<JsonNode> jsonArray(
-      Matcher<? super Collection<JsonNode>> elementsMatcher) {
+      Matcher<? super Collection<? extends JsonNode>> elementsMatcher) {
     return new IsJsonArray(elementsMatcher);
   }
 
