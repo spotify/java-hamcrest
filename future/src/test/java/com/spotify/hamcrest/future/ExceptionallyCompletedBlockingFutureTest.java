@@ -97,7 +97,8 @@ public class ExceptionallyCompletedBlockingFutureTest {
       final StringDescription description = new StringDescription();
       SUT.describeMismatch(future, description);
 
-      assertThat(description.toString(), is("a future that was cancelled"));
+      assertThat(description.toString(),
+          matchesPattern("^a future that was (cancelled|interrupted)$"));
     } finally {
       // This will cause the future's thread to throw InterruptedException and make it return
       future.cancel(true);
