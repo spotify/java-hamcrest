@@ -224,7 +224,7 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
    * @param lambda lambda to extract the name from
    * @return a serialized version of the lambda, containing useful information for introspection
    */
-  private static SerializedLambda serializeLambda(final Object lambda) {
+  static SerializedLambda serializeLambda(final Object lambda) {
     requireNonNull(lambda);
 
     final Method writeReplace;
