@@ -82,8 +82,8 @@ public class ExceptionallyCompletedBlockingFutureTest {
 
       assertThat(description.toString(), is("a future that was interrupted"));
     } finally {
-      // This will cause the future's thread to throw InterruptedException and make it return
-      future.cancel(true);
+      // Clear the interrupted flag to avoid interference between tests
+      Thread.interrupted();
     }
   }
 
@@ -91,16 +91,11 @@ public class ExceptionallyCompletedBlockingFutureTest {
   public void testCancelledMismatchFormatting() throws Exception {
     final SettableFuture<Void> future = SettableFuture.create();
 
-    try {
-      // Cancel the future
-      future.cancel(true);
-      final StringDescription description = new StringDescription();
-      SUT.describeMismatch(future, description);
+    // Cancel the future
+    future.cancel(true);
+    final StringDescription description = new StringDescription();
+    SUT.describeMismatch(future, description);
 
-      assertThat(description.toString(), is("a future that was cancelled"));
-    } finally {
-      // This will cause the future's thread to throw InterruptedException and make it return
-      future.cancel(true);
-    }
+    assertThat(description.toString(), is("a future that was cancelled"));
   }
 }

@@ -81,8 +81,8 @@ public class ExceptionallyCompletedFutureTest {
 
       assertThat(description.toString(), is("a future that was not done"));
     } finally {
-      // This will cause the future's thread to throw InterruptedException and make it return
-      future.cancel(true);
+      // Clear the interrupted flag to avoid interference between tests
+      Thread.interrupted();
     }
   }
 

@@ -83,8 +83,8 @@ public class ExceptionallyCompletedCompletionStageTest {
 
       assertThat(description.toString(), is("a stage that was not completed"));
     } finally {
-      // This will cause the future's thread to throw InterruptedException and make it return
-      future.cancel(true);
+      // Clear the interrupted flag to avoid interference between tests
+      Thread.interrupted();
     }
   }
 }
