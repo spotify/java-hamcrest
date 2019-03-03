@@ -31,7 +31,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.io.IOException;
 import java.util.concurrent.Future;
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
@@ -71,8 +70,8 @@ public class SuccessfullyCompletedFutureTest {
 
       assertThat(description.toString(), is("a future that was not completed"));
     } finally {
-      // This will cause the future's thread to throw InterruptedException and make it return
-      future.cancel(true);
+      // Clear the interrupted flag to avoid interference between tests
+      Thread.interrupted();
     }
   }
 
@@ -88,8 +87,8 @@ public class SuccessfullyCompletedFutureTest {
 
       assertThat(description.toString(), is("a future that was cancelled"));
     } finally {
-      // This will cause the future's thread to throw InterruptedException and make it return
-      future.cancel(true);
+      // Clear the interrupted flag to avoid interference between tests
+      Thread.interrupted();
     }
   }
 
