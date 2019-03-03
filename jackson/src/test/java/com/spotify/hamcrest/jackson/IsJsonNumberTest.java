@@ -31,6 +31,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.BigIntegerNode;
+import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -65,7 +67,7 @@ public class IsJsonNumberTest {
 
   @Test
   public void testLiteralBigInteger() throws Exception {
-    final Matcher<JsonNode> sut = jsonNumber(NF.numberNode(BigInteger.ONE));
+    final Matcher<JsonNode> sut = jsonNumber(BigIntegerNode.valueOf(BigInteger.ONE));
 
     assertThat(NF.numberNode(BigInteger.ONE), is(sut));
   }
@@ -86,7 +88,7 @@ public class IsJsonNumberTest {
 
   @Test
   public void testLiteralBigDecimal() throws Exception {
-    final Matcher<JsonNode> sut = jsonNumber(NF.numberNode(BigDecimal.ONE));
+    final Matcher<JsonNode> sut = jsonNumber(DecimalNode.valueOf(BigDecimal.ONE));
 
     assertThat(NF.numberNode(BigDecimal.ONE), is(sut));
   }
