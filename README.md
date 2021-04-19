@@ -104,6 +104,20 @@ item 0: User {
 }
 ```
 
+#### Matching with general function mapping
+
+You can also apply general functions/lambdas for matches:
+```java
+assertThat("A string", MapMatcher.map(s -> s.charAt(0), equalTo('A')))
+
+```
+
+Example output:
+```
+Expected: MapMatcherTest.<lambda>(value) = "B"
+     but: MapMatcherTest.<lambda>("A string") was "A"
+```
+
 ### JSON matchers
 [![Javadocs](http://www.javadoc.io/badge/com.spotify/hamcrest-jackson.svg?color=blue)](http://www.javadoc.io/doc/com.spotify/hamcrest-jackson)
 
