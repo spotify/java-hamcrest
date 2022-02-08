@@ -54,6 +54,7 @@ class SuccessfullyCompletedBlockingCompletionStage<T>
         return false;
       }
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       mismatchDescription.appendText("a stage that was interrupted");
       return false;
     } catch (ExecutionException e) {

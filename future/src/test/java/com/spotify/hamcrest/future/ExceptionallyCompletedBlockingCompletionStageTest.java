@@ -25,10 +25,13 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
@@ -83,6 +86,36 @@ public class ExceptionallyCompletedBlockingCompletionStageTest {
     } finally {
       // Clear the interrupted flag to avoid interference between tests
       Thread.interrupted();
+    }
+  }
+
+  @Test
+  public void testInterruptActuallyInterruptsAssert() throws Exception {
+    final CountDownLatch beforeAssertLatch = new CountDownLatch(1);
+    final CountDownLatch afterAssertLatch = new CountDownLatch(1);
+    final Thread threadToInterrupt = new Thread(() -> {
+      try {
+        beforeAssertLatch.countDown();
+        assertThat(new CompletableFuture<String>(),
+            SUT);
+      } finally {
+        afterAssertLatch.countDown();
+      }
+    });
+    try {
+      threadToInterrupt.setDaemon(true);
+      threadToInterrupt.start();
+
+      beforeAssertLatch.await();
+      TimeUnit.SECONDS.sleep(1);
+      threadToInterrupt.interrupt();
+
+      assertTrue("Failed to interrupt assertion",
+          afterAssertLatch.await(2, TimeUnit.SECONDS));
+    } finally {
+      // Hamcrest goes into blocking method twice,
+      // second interrupt should release it and allow thread to finish:
+      threadToInterrupt.interrupt();
     }
   }
 }
