@@ -9,17 +9,19 @@ This is a collection of libraries extending the Hamcrest matching
 library with useful matchers. We consider this library in beta but use it
 in many of our internal projects.
 
-* [Download](#download)
-* [Getting started](#getting-started)
-  * [POJO matchers](#pojo-matchers)
-  * [JSON matchers](#json-matchers)
-  * [java.util.Optional matchers](#javautiloptional-matchers)
-  * [Future matchers](#future-matchers)
-    * [raw `Future` matchers](#raw-future-matchers)
-    * [Java 8's `CompletableFuture` matchers](#java-8s-completablefuture-matchers)
-* [Prerequisites](#prerequisites)
-* [Releasing](#releasing)
-* [Code of conduct](#code-of-conduct)
+- [Spotify Hamcrest](#spotify-hamcrest)
+  - [Download](#download)
+  - [Getting Started](#getting-started)
+    - [POJO matchers](#pojo-matchers)
+    - [JSON matchers](#json-matchers)
+    - [java.util.Optional matchers](#javautiloptional-matchers)
+    - [Future matchers](#future-matchers)
+      - [raw `Future` matchers](#raw-future-matchers)
+      - [Java 8's `CompletableFuture` matchers](#java-8s-completablefuture-matchers)
+  - [Prerequisities](#prerequisities)
+  - [Releasing](#releasing)
+  - [Code of conduct](#code-of-conduct)
+  - [Ownership](#ownership)
 
 
 ## Download
@@ -282,3 +284,13 @@ expected to honor this code.
 
   [code-of-conduct]: https://github.com/spotify/code-of-conduct/blob/master/code-of-conduct.md
   [maven-search]: https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.spotify%22%20hamcrest*
+
+## Ownership
+
+The Weaver squad is currently owning this project internally.
+We are currently in the evaluating process of the ownership of this and other OSS Java libraries.
+The ownership takes into account **ONLY** security maintenance.
+
+This repo is also co-owned by other people:
+
+* [mattnworb](https://github.com/mattnworb)
