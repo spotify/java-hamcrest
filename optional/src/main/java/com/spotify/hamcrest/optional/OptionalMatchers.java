@@ -21,6 +21,7 @@
 package com.spotify.hamcrest.optional;
 
 import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.util.Optional;
 import org.hamcrest.Matcher;
@@ -42,6 +43,14 @@ public final class OptionalMatchers {
    */
   public static Matcher<Optional<?>> optionalWithValue() {
     return optionalWithValue(anything());
+  }
+
+  /**
+   * Creates a Matcher that matches if an Optional contains a given value
+   * as shortcut for optionalWithValue(equalTo(x)).
+   */
+  public static <T> Matcher<Optional<? extends T>> optionalWithValue(final T value) {
+    return optionalWithValue(equalTo(value));
   }
 
   /**
