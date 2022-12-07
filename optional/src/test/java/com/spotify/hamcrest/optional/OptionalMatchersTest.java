@@ -39,6 +39,8 @@ public class OptionalMatchersTest {
   public void testPresent() {
     assertThat(Optional.of("x"), optionalWithValue());
 
+    assertThat(Optional.of("x"), OptionalMatchers.optionalWithValue("x"));
+
     assertThat(Optional.of("x"), OptionalMatchers.optionalWithValue(equalTo("x")));
     assertThat(Optional.of("x"), OptionalMatchers.optionalWithValue(not(equalTo("a"))));
 
