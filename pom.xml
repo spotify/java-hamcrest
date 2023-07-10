@@ -13,7 +13,7 @@
   <properties>
     <auto-value.version>1.10.2</auto-value.version>
   </properties>
-  <version>1.3.2</version>
+  <version>1.3.3-SNAPSHOT</version>
   <url>https://github.com/spotify/java-hamcrest</url>
 
   <licenses>
@@ -50,7 +50,7 @@
   <scm>
     <connection>scm:git:https://github.com/spotify/java-hamcrest.git</connection>
     <developerConnection>scm:git:git@github.com:spotify/java-hamcrest.git</developerConnection>
-    <tag>v1.3.2</tag>
+    <tag>HEAD</tag>
     <url>https://github.com/spotify/java-hamcrest</url>
   </scm>
 
