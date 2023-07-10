@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.spotify</groupId>
     <artifactId>foss-root</artifactId>
-    <version>5</version>
+    <version>15</version>
   </parent>
 
   <artifactId>hamcrest</artifactId>
@@ -102,8 +102,8 @@
         <plugin>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <configuration>
-            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-            <testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
+            <sourceDirectories>${project.build.sourceDirectory}</sourceDirectories>
+            <testSourceDirectories>${project.build.testSourceDirectory}</testSourceDirectories>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
             <violationSeverity>warning</violationSeverity>
           </configuration>
