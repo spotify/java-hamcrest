@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -79,9 +79,7 @@ public class IsJsonTextTest {
     final StringDescription description = new StringDescription();
     sut.describeMismatch(NF.textNode("foo"), description);
 
-    assertThat(description.toString(), is(
-        "was a text node with value that was \"foo\""
-    ));
+    assertThat(description.toString(), is("was a text node with value that was \"foo\""));
   }
 
   @Test
@@ -91,9 +89,7 @@ public class IsJsonTextTest {
     final StringDescription description = new StringDescription();
     sut.describeMismatch(NF.booleanNode(false), description);
 
-    assertThat(description.toString(), is(
-        "was not a string node, but a boolean node"
-    ));
+    assertThat(description.toString(), is("was not a string node, but a boolean node"));
   }
 
   @Test
@@ -103,9 +99,7 @@ public class IsJsonTextTest {
     final StringDescription description = new StringDescription();
     sut.describeTo(description);
 
-    assertThat(description.toString(), is(
-        "a text node with value that is ANYTHING"
-    ));
+    assertThat(description.toString(), is("a text node with value that is ANYTHING"));
   }
 
   @Test
@@ -115,8 +109,6 @@ public class IsJsonTextTest {
     final StringDescription description = new StringDescription();
     sut.describeTo(description);
 
-    assertThat(description.toString(), is(
-        "a text node with value that is ANYTHING"
-    ));
+    assertThat(description.toString(), is("a text node with value that is ANYTHING"));
   }
 }

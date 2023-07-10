@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,6 +40,12 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 
+/**
+ * Matches JSON Object.
+ *
+ * @see #jsonObject()
+ * @see #jsonObject(ObjectNode)
+ */
 public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
 
   private final LinkedHashMap<String, Matcher<? super JsonNode>> entryMatchers;
@@ -49,10 +55,21 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
     this.entryMatchers = Objects.requireNonNull(entryMatchers);
   }
 
+  /**
+   * Creates a json matcher.
+   *
+   * @return instance of {@link IsJsonObject}.
+   */
   public static IsJsonObject jsonObject() {
     return new IsJsonObject(new LinkedHashMap<>());
   }
 
+  /**
+   * Creates a json matcher.
+   *
+   * @param objectNode expected json {@link ObjectNode}.
+   * @return instance of {@link IsJsonObject}.
+   */
   public static IsJsonObject jsonObject(final ObjectNode objectNode) {
     final Iterator<Map.Entry<String, JsonNode>> fields = objectNode.fields();
     final LinkedHashMap<String, Matcher<? super JsonNode>> entryMatchers = new LinkedHashMap<>();
@@ -93,9 +110,16 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
     }
   }
 
+  /**
+   * Expect that the value of a given key matches a value.
+   *
+   * @param key the key we want to match.
+   * @param valueMatcher the matcher of the value.
+   * @return a new instance of {@link IsJsonObject}.
+   */
   public IsJsonObject where(String key, Matcher<? super JsonNode> valueMatcher) {
-    final LinkedHashMap<String, Matcher<? super JsonNode>> newMap
-        = new LinkedHashMap<>(entryMatchers);
+    final LinkedHashMap<String, Matcher<? super JsonNode>> newMap =
+        new LinkedHashMap<>(entryMatchers);
     newMap.put(key, valueMatcher);
     return new IsJsonObject(newMap);
   }
@@ -116,10 +140,7 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
 
     if (!mismatchedKeys.isEmpty()) {
       DescriptionUtils.describeNestedMismatches(
-          entryMatchers.keySet(),
-          mismatchDescription,
-          mismatchedKeys,
-          IsJsonObject::describeKey);
+          entryMatchers.keySet(), mismatchDescription, mismatchedKeys, IsJsonObject::describeKey);
       return false;
     }
     return true;

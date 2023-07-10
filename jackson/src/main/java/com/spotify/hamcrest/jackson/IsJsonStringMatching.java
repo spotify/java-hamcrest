@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,8 +35,8 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 /**
  * Matcher for matching Json strings
  *
- * <p>This is useful as an entry point to matching larger structures without needing
- * to use Jackson explicitly.
+ * <p>This is useful as an entry point to matching larger structures without needing to use Jackson
+ * explicitly.
  *
  * <pre>
  *   <code>
@@ -61,12 +61,11 @@ public final class IsJsonStringMatching extends TypeSafeDiagnosingMatcher<String
 
   @Override
   protected boolean matchesSafely(final String string, final Description description) {
-    return parseJsonNode(string, description)
-        .matching(matcher);
+    return parseJsonNode(string, description).matching(matcher);
   }
 
-  private Condition<JsonNode> parseJsonNode(final String string,
-                                            final Description mismatchDescription) {
+  private Condition<JsonNode> parseJsonNode(
+      final String string, final Description mismatchDescription) {
     if (string == null) {
       mismatchDescription.appendText(" but JSON string was null");
       return notMatched();
@@ -76,7 +75,8 @@ public final class IsJsonStringMatching extends TypeSafeDiagnosingMatcher<String
       final JsonNode jsonNode = MAPPER.readTree(string);
       return matched(jsonNode, mismatchDescription);
     } catch (IOException e) {
-      mismatchDescription.appendText(" but the string was not valid JSON ")
+      mismatchDescription
+          .appendText(" but the string was not valid JSON ")
           .appendValue(e.getMessage());
       return notMatched();
     }
@@ -84,7 +84,6 @@ public final class IsJsonStringMatching extends TypeSafeDiagnosingMatcher<String
 
   @Override
   public void describeTo(final Description description) {
-    description.appendText("A JSON string that matches ")
-        .appendDescriptionOf(matcher);
+    description.appendText("A JSON string that matches ").appendDescriptionOf(matcher);
   }
 }

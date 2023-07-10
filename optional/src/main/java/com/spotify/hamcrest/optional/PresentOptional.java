@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,8 +34,8 @@ class PresentOptional<T> extends TypeSafeDiagnosingMatcher<Optional<? extends T>
   }
 
   @Override
-  protected boolean matchesSafely(final Optional<? extends T> item,
-                                  final Description mismatchDescription) {
+  protected boolean matchesSafely(
+      final Optional<? extends T> item, final Description mismatchDescription) {
     if (item.isPresent()) {
       if (matcher.matches(item.get())) {
         return true;
@@ -52,8 +52,6 @@ class PresentOptional<T> extends TypeSafeDiagnosingMatcher<Optional<? extends T>
 
   @Override
   public void describeTo(final Description description) {
-    description
-        .appendText("an Optional with a value that ")
-        .appendDescriptionOf(matcher);
+    description.appendText("an Optional with a value that ").appendDescriptionOf(matcher);
   }
 }

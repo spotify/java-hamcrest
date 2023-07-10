@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,12 +68,7 @@ public class DescriptionUtilsTest {
 
     DescriptionUtils.describeNestedMismatches(allKeys, description, mismatchedKeys, describeKey);
 
-    assertThat(description.toString(), is(
-        "{\n"
-            + "  first: mismatch!\n"
-            + "  ...\n"
-            + "}"
-    ));
+    assertThat(description.toString(), is("{\n" + "  first: mismatch!\n" + "  ...\n" + "}"));
   }
 
   @Test
@@ -86,12 +81,7 @@ public class DescriptionUtilsTest {
 
     DescriptionUtils.describeNestedMismatches(allKeys, description, mismatchedKeys, describeKey);
 
-    assertThat(description.toString(), is(
-        "{\n"
-            + "  ...\n"
-            + "  third: mismatch!\n"
-            + "}"
-    ));
+    assertThat(description.toString(), is("{\n" + "  ...\n" + "  third: mismatch!\n" + "}"));
   }
 
   @Test
@@ -104,34 +94,25 @@ public class DescriptionUtilsTest {
 
     DescriptionUtils.describeNestedMismatches(allKeys, description, mismatchedKeys, describeKey);
 
-    assertThat(description.toString(), is(
-        "{\n"
-            + "  ...\n"
-            + "  second: mismatch!\n"
-            + "  ...\n"
-            + "}"
-    ));
+    assertThat(
+        description.toString(), is("{\n" + "  ...\n" + "  second: mismatch!\n" + "  ...\n" + "}"));
   }
 
   @Test
   public void describeNestMismatchesNoEllipsisBetweenConsecutiveMismatches() throws Exception {
     Set<String> allKeys = new LinkedHashSet<>(asList("first", "second", "third", "forth"));
     StringDescription description = new StringDescription();
-    Map<String, Consumer<Description>> mismatchedKeys = ImmutableMap.of(
-        "second", desc -> desc.appendText("mismatch!"),
-        "third", desc -> desc.appendText("mismatch!"));
+    Map<String, Consumer<Description>> mismatchedKeys =
+        ImmutableMap.of(
+            "second", desc -> desc.appendText("mismatch!"),
+            "third", desc -> desc.appendText("mismatch!"));
     BiConsumer<String, Description> describeKey = (str, desc) -> desc.appendText(str);
 
     DescriptionUtils.describeNestedMismatches(allKeys, description, mismatchedKeys, describeKey);
 
-    assertThat(description.toString(), is(
-        "{\n"
-            + "  ...\n"
-            + "  second: mismatch!\n"
-            + "  third: mismatch!\n"
-            + "  ...\n"
-            + "}"
-    ));
+    assertThat(
+        description.toString(),
+        is("{\n" + "  ...\n" + "  second: mismatch!\n" + "  third: mismatch!\n" + "  ...\n" + "}"));
   }
 
   @Test
@@ -144,14 +125,15 @@ public class DescriptionUtilsTest {
 
     DescriptionUtils.describeNestedMismatches(allKeys, description, mismatchedKeys, describeKey);
 
-    assertThat(description.toString(), is(
-        "{\n"
-            + "  ...\n"
-            + "  second: {\n"
-            + "    nestedKey: mismatch!\n"
-            + "  }\n"
-            + "  ...\n"
-            + "}"
-    ));
+    assertThat(
+        description.toString(),
+        is(
+            "{\n"
+                + "  ...\n"
+                + "  second: {\n"
+                + "    nestedKey: mismatch!\n"
+                + "  }\n"
+                + "  ...\n"
+                + "}"));
   }
 }

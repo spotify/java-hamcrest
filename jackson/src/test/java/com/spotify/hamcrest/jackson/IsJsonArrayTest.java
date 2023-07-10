@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -92,9 +92,9 @@ public class IsJsonArrayTest {
     final StringDescription description = new StringDescription();
     sut.describeMismatch(NF.arrayNode().add(1), description);
 
-    assertThat(description.toString(), is(
-        "was an array node whose elements item 0: was not a string node, but a number node"
-    ));
+    assertThat(
+        description.toString(),
+        is("was an array node whose elements item 0: was not a string node, but a number node"));
   }
 
   @Test
@@ -104,9 +104,7 @@ public class IsJsonArrayTest {
     final StringDescription description = new StringDescription();
     sut.describeMismatch(NF.booleanNode(false), description);
 
-    assertThat(description.toString(), is(
-        "was not an array node, but a boolean node"
-    ));
+    assertThat(description.toString(), is("was not an array node, but a boolean node"));
   }
 
   @Test
@@ -116,9 +114,7 @@ public class IsJsonArrayTest {
     final StringDescription description = new StringDescription();
     sut.describeTo(description);
 
-    assertThat(description.toString(), is(
-        "an array node whose elements is ANYTHING"
-    ));
+    assertThat(description.toString(), is("an array node whose elements is ANYTHING"));
   }
 
   @Test
@@ -128,8 +124,6 @@ public class IsJsonArrayTest {
     final StringDescription description = new StringDescription();
     sut.describeTo(description);
 
-    assertThat(description.toString(), is(
-        "an array node whose elements is ANYTHING"
-    ));
+    assertThat(description.toString(), is("an array node whose elements is ANYTHING"));
   }
 }
