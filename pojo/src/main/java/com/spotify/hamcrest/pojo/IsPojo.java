@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,31 +59,26 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
     return builder(cls).build();
   }
 
-  public <T> IsPojo<A> where(
-      final String methodName,
-      final Matcher<T> returnValueMatcher) {
+  public <T> IsPojo<A> where(final String methodName, final Matcher<T> returnValueMatcher) {
     return where(
         methodName,
         self -> {
           final Method method = methodWithName(methodName, self);
           method.setAccessible(true);
-          @SuppressWarnings("unchecked") final T returnValue = (T) method.invoke(self);
+          @SuppressWarnings("unchecked")
+          final T returnValue = (T) method.invoke(self);
           return returnValue;
         },
         returnValueMatcher);
   }
 
   public <T> IsPojo<A> where(
-      final MethodReference<A, T> methodReference,
-      final Matcher<T> returnValueMatcher) {
+      final MethodReference<A, T> methodReference, final Matcher<T> returnValueMatcher) {
     final SerializedLambda serializedLambda = serializeLambda(methodReference);
 
     ensureDirectMethodReference(serializedLambda);
 
-    return where(
-        serializedLambda.getImplMethodName(),
-        methodReference,
-        returnValueMatcher);
+    return where(serializedLambda.getImplMethodName(), methodReference, returnValueMatcher);
   }
 
   private <T> IsPojo<A> where(
@@ -105,8 +100,7 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
   }
 
   public IsPojo<A> withProperty(String property, Matcher<?> valueMatcher) {
-    return where("get" + CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, property),
-        valueMatcher);
+    return where("get" + CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, property), valueMatcher);
   }
 
   private static <A> Builder<A> builder(final Class<A> cls) {
@@ -139,45 +133,44 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
 
     final Map<String, Consumer<Description>> mismatches = new LinkedHashMap<>();
 
-    methodHandlers().forEach(
-        (methodName, handler) ->
-            matchMethod(item, handler).ifPresent(descriptionConsumer ->
-                mismatches.put(methodName, descriptionConsumer)));
+    methodHandlers()
+        .forEach(
+            (methodName, handler) ->
+                matchMethod(item, handler)
+                    .ifPresent(
+                        descriptionConsumer -> mismatches.put(methodName, descriptionConsumer)));
 
     if (!mismatches.isEmpty()) {
       mismatchDescription.appendText(cls().getSimpleName()).appendText(" ");
       DescriptionUtils.describeNestedMismatches(
-          methodHandlers().keySet(),
-          mismatchDescription,
-          mismatches,
-          IsPojo::describeMethod);
+          methodHandlers().keySet(), mismatchDescription, mismatches, IsPojo::describeMethod);
       return false;
     }
 
     return true;
   }
 
-
   @Override
   public void describeTo(Description description) {
     description.appendText(cls().getSimpleName()).appendText(" {\n");
 
-    methodHandlers().forEach((methodName, handler) -> {
-      final Matcher<?> matcher = handler.matcher();
+    methodHandlers()
+        .forEach(
+            (methodName, handler) -> {
+              final Matcher<?> matcher = handler.matcher();
 
-      description.appendText("  ").appendText(methodName).appendText("(): ");
+              description.appendText("  ").appendText(methodName).appendText("(): ");
 
-      Description innerDescription = new StringDescription();
-      matcher.describeTo(innerDescription);
+              Description innerDescription = new StringDescription();
+              matcher.describeTo(innerDescription);
 
-      indentDescription(description, innerDescription);
-    });
+              indentDescription(description, innerDescription);
+            });
     description.appendText("}");
   }
 
   private static <A> Optional<Consumer<Description>> matchMethod(
-      final A item,
-      final MethodHandler<A, ?> handler) {
+      final A item, final MethodHandler<A, ?> handler) {
     final Matcher<?> matcher = handler.matcher();
     final MethodReference<A, ?> reference = handler.reference();
 
@@ -194,15 +187,19 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
       return Optional.of(d -> d.appendText("did not exist"));
     } catch (InvocationTargetException e) {
       final Throwable cause = e.getCause();
-      return Optional
-          .of(d -> d.appendText("threw an exception: ")
-              .appendText(cause.getClass().getCanonicalName())
-              .appendText(": ").appendText(cause.getMessage()));
+      return Optional.of(
+          d ->
+              d.appendText("threw an exception: ")
+                  .appendText(cause.getClass().getCanonicalName())
+                  .appendText(": ")
+                  .appendText(cause.getMessage()));
     } catch (Exception e) {
-      return Optional
-          .of(d -> d.appendText("threw an exception: ")
-              .appendText(e.getClass().getCanonicalName())
-              .appendText(": ").appendText(e.getMessage()));
+      return Optional.of(
+          d ->
+              d.appendText("threw an exception: ")
+                  .appendText(e.getClass().getCanonicalName())
+                  .appendText(": ")
+                  .appendText(e.getMessage()));
     }
   }
 
@@ -212,14 +209,13 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
 
   private void indentDescription(Description description, Description innerDescription) {
     description
-        .appendText(
-            Joiner.on("\n  ").join(Splitter.on('\n').split(innerDescription.toString())))
+        .appendText(Joiner.on("\n  ").join(Splitter.on('\n').split(innerDescription.toString())))
         .appendText("\n");
   }
 
   /**
-   * Method uses serialization trick to extract information about lambda,
-   * to give understandable name in case of mismatch.
+   * Method uses serialization trick to extract information about lambda, to give understandable
+   * name in case of mismatch.
    *
    * @param lambda lambda to extract the name from
    * @return a serialized version of the lambda, containing useful information for introspection
@@ -229,11 +225,14 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
 
     final Method writeReplace;
     try {
-      writeReplace = AccessController.doPrivileged((PrivilegedExceptionAction<Method>) () -> {
-        Method method = lambda.getClass().getDeclaredMethod("writeReplace");
-        method.setAccessible(true);
-        return method;
-      });
+      writeReplace =
+          AccessController.doPrivileged(
+              (PrivilegedExceptionAction<Method>)
+                  () -> {
+                    Method method = lambda.getClass().getDeclaredMethod("writeReplace");
+                    method.setAccessible(true);
+                    return method;
+                  });
     } catch (PrivilegedActionException e) {
       throw new IllegalStateException("Cannot serialize lambdas in unprivileged context", e);
     }
@@ -250,9 +249,8 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
     try {
       final Class<?> implClass = Class.forName(serializedLambda.getImplClass().replace('/', '.'));
       if (stream(implClass.getMethods())
-          .noneMatch(m ->
-              m.getName().equals(serializedLambda.getImplMethodName())
-              && !m.isSynthetic())) {
+          .noneMatch(
+              m -> m.getName().equals(serializedLambda.getImplMethodName()) && !m.isSynthetic())) {
         throw new IllegalArgumentException("The supplied lambda is not a direct method reference");
       }
     } catch (final ClassNotFoundException e) {
@@ -269,8 +267,7 @@ public abstract class IsPojo<A> extends TypeSafeDiagnosingMatcher<A> {
     abstract Matcher<T> matcher();
 
     static <A, T> MethodHandler<A, T> create(
-        final MethodReference<A, T> reference,
-        final Matcher<T> matcher) {
+        final MethodReference<A, T> reference, final Matcher<T> matcher) {
       return new AutoValue_IsPojo_MethodHandler<>(reference, matcher);
     }
   }

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,8 +31,8 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 /**
- * Creates a Matcher that matches a CompletionStage that has completed with a value that matches
- * a given Matcher. A CompletionStage that is not yet completed will not be matched.
+ * Creates a Matcher that matches a CompletionStage that has completed with a value that matches a
+ * given Matcher. A CompletionStage that is not yet completed will not be matched.
  */
 class SuccessfullyCompletedCompletionStage<T>
     extends TypeSafeDiagnosingMatcher<CompletionStage<? extends T>> {
@@ -44,8 +44,8 @@ class SuccessfullyCompletedCompletionStage<T>
   }
 
   @Override
-  protected boolean matchesSafely(final CompletionStage<? extends T> stage,
-                                  final Description mismatchDescription) {
+  protected boolean matchesSafely(
+      final CompletionStage<? extends T> stage, final Description mismatchDescription) {
     final CompletableFuture<? extends T> future = stage.toCompletableFuture();
     if (future.isDone()) {
       if (future.isCancelled()) {
@@ -80,8 +80,6 @@ class SuccessfullyCompletedCompletionStage<T>
 
   @Override
   public void describeTo(final Description description) {
-    description
-        .appendText("a stage that completed to a value that ")
-        .appendDescriptionOf(matcher);
+    description.appendText("a stage that completed to a value that ").appendDescriptionOf(matcher);
   }
 }

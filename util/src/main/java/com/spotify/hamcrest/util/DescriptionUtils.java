@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,12 @@ import java.util.function.Consumer;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
+/**
+ * Utils class to help fill {@link Description}.
+ *
+ * @see #describeNestedMismatches(Set, Description, Map, BiConsumer)
+ * @see #indentDescription(Description, Description)
+ */
 public final class DescriptionUtils {
 
   private static final Splitter LINE_SPLITTER = Splitter.on('\n');
@@ -41,6 +47,12 @@ public final class DescriptionUtils {
     throw new IllegalAccessError("This class may not be instantiated.");
   }
 
+  /**
+   * Idents a description.
+   *
+   * @param description the current active description.
+   * @param innerDescription the description we want indented.
+   */
   public static void indentDescription(Description description, Description innerDescription) {
     final Iterable<String> lines = LINE_SPLITTER.split(innerDescription.toString().trim());
     final String indentedLines = INDENTED_LINE_JOINER.join(lines);
@@ -50,15 +62,15 @@ public final class DescriptionUtils {
   /**
    * Describes a nested mismatch, useful for nested types like Objects or Maps
    *
-   * <p>This will print <b>all</b> mismatches occurring in a mismatch list, and properly
-   * handle ellipsis (...). Order will also be maintained based on the order of the allKeys
-   * set. To maintain input order, consider using {@link java.util.LinkedHashSet}
-   * or {@link java.util.LinkedHashMap}
+   * <p>This will print <b>all</b> mismatches occurring in a mismatch list, and properly handle
+   * ellipsis (...). Order will also be maintained based on the order of the allKeys set. To
+   * maintain input order, consider using {@link java.util.LinkedHashSet} or {@link
+   * java.util.LinkedHashMap}
    *
-   * <p>This will also handle proper indentation in the case of nesting.
-   * Description will contain output that looks like,
-   * <pre>
-   *   {@code
+   * <p>This will also handle proper indentation in the case of nesting. Description will contain
+   * output that looks like,
+   *
+   * <pre>{@code
    * {
    *   ...
    *   myKey: expected 1 but was 2
@@ -68,15 +80,14 @@ public final class DescriptionUtils {
    *     nestedKey: expected null
    *   }
    * }
-   *   }
-   * </pre>
    *
-   * @param allKeys             {@link Set} of all keys expecting to match
+   * }</pre>
+   *
+   * @param allKeys {@link Set} of all keys expecting to match
    * @param mismatchDescription The {@link Description} to write the output to
-   * @param mismatchedKeys      A {@link Map} of all keys mismatched. The value is a
-   *                            {@link Consumer} which will write the describe the mismatch for that
-   *                            key
-   * @param describeKey         A {@link BiConsumer} used to describe the key
+   * @param mismatchedKeys A {@link Map} of all keys mismatched. The value is a {@link Consumer}
+   *     which will write the describe the mismatch for that key
+   * @param describeKey A {@link BiConsumer} used to describe the key
    */
   public static void describeNestedMismatches(
       Set<String> allKeys,
@@ -96,11 +107,7 @@ public final class DescriptionUtils {
           mismatchDescription.appendText("  ...\n");
         }
 
-        describeMismatchForKey(
-            key,
-            mismatchDescription,
-            describeKey,
-            mismatchedKeys.get(key));
+        describeMismatchForKey(key, mismatchDescription, describeKey, mismatchedKeys.get(key));
         previousMismatchKey = key;
       }
       previousKey = key;

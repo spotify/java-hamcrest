@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,23 +34,40 @@ import java.util.function.Function;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+/**
+ * Matches JSON Number.
+ *
+ * @see #jsonNumber()
+ * @see #jsonNumber(NumericNode)
+ */
 public class IsJsonNumber extends AbstractJsonNodeMatcher<NumericNode> {
 
   private final Matcher<?> numberMatcher;
   private final Function<NumericNode, Object> projection;
 
-  private IsJsonNumber(final Matcher<?> numberMatcher,
-                       final Function<NumericNode, Object> projection) {
+  private IsJsonNumber(
+      final Matcher<?> numberMatcher, final Function<NumericNode, Object> projection) {
     super(JsonNodeType.NUMBER);
     this.numberMatcher = Objects.requireNonNull(numberMatcher);
     this.projection = Objects.requireNonNull(projection);
   }
 
+  /**
+   * Matches a JSON Number.
+   *
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonNumber() {
     // Function.identity() doesn't work since types change
     return new IsJsonNumber(is(anything()), n -> n);
   }
 
+  /**
+   * Matches a JSON Number.
+   *
+   * @param value the JSON Number value to be matched.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonNumber(final NumericNode value) {
     final JsonParser.NumberType numberType = value.numberType();
     switch (numberType) {
@@ -71,50 +88,122 @@ public class IsJsonNumber extends AbstractJsonNodeMatcher<NumericNode> {
     }
   }
 
+  /**
+   * Matches a JSON Int.
+   *
+   * @param number the int to be matched.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonInt(int number) {
     return new IsJsonNumber(is(number), NumericNode::asInt);
   }
 
+  /**
+   * Matches a JSON Int.
+   *
+   * @param numberMatcher matcher for an integer value from a json value.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonInt(Matcher<? super Integer> numberMatcher) {
     return new IsJsonNumber(numberMatcher, NumericNode::asInt);
   }
 
+  /**
+   * Matches a JSON Long.
+   *
+   * @param number the long to be matched.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonLong(long number) {
     return new IsJsonNumber(is(number), NumericNode::asLong);
   }
 
+  /**
+   * Matches a JSON Long.
+   *
+   * @param numberMatcher matcher for an long value from a json value.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonLong(Matcher<? super Long> numberMatcher) {
     return new IsJsonNumber(numberMatcher, NumericNode::asLong);
   }
 
+  /**
+   * Matches a JSON Big Integer.
+   *
+   * @param number the big integer to be matched.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonBigInteger(BigInteger number) {
     return new IsJsonNumber(is(number), NumericNode::bigIntegerValue);
   }
 
+  /**
+   * Matches a JSON Long.
+   *
+   * @param numberMatcher matcher for a big integer value from a json value.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonBigInteger(Matcher<? super BigInteger> numberMatcher) {
     return new IsJsonNumber(numberMatcher, NumericNode::bigIntegerValue);
   }
 
+  /**
+   * Matches a JSON Float.
+   *
+   * @param number the float to be matched.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonFloat(float number) {
     return new IsJsonNumber(is(number), NumericNode::floatValue);
   }
 
+  /**
+   * Matches a JSON Float.
+   *
+   * @param numberMatcher matcher for a float value from a json value.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonFloat(Matcher<? super Float> numberMatcher) {
     return new IsJsonNumber(numberMatcher, NumericNode::floatValue);
   }
 
+  /**
+   * Matches a JSON Double.
+   *
+   * @param number the double to be matched.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonDouble(double number) {
     return new IsJsonNumber(is(number), NumericNode::asDouble);
   }
 
+  /**
+   * Matches a JSON Double.
+   *
+   * @param numberMatcher matcher for a double value from a json value.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonDouble(Matcher<? super Double> numberMatcher) {
     return new IsJsonNumber(numberMatcher, NumericNode::asDouble);
   }
 
+  /**
+   * Matches a JSON Big Decimal.
+   *
+   * @param number the big decimal to be matched.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonBigDecimal(BigDecimal number) {
     return new IsJsonNumber(is(number), NumericNode::decimalValue);
   }
 
+  /**
+   * Matches a Big Decimal Long.
+   *
+   * @param numberMatcher matcher for a big decimal value from a json value.
+   * @return the json number matcher.
+   */
   public static Matcher<JsonNode> jsonBigDecimal(Matcher<? super BigDecimal> numberMatcher) {
     return new IsJsonNumber(numberMatcher, NumericNode::decimalValue);
   }

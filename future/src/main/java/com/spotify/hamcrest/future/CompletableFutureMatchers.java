@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,8 +36,7 @@ import org.hamcrest.Matcher;
  */
 public final class CompletableFutureMatchers {
 
-  private CompletableFutureMatchers() {
-  }
+  private CompletableFutureMatchers() {}
 
   /**
    * Creates a {@link Matcher} that matches a {@link CompletionStage} that has completed with an
@@ -90,7 +89,7 @@ public final class CompletableFutureMatchers {
    * that matches the given Matcher.
    *
    * <p><strong>If the {@link CompletionStage} has not yet completed, this matcher waits for it to
-   *    finish.</strong>
+   * finish.</strong>
    */
   public static <T> Matcher<CompletionStage<? extends T>> stageWillCompleteWithValueThat(
       final Matcher<T> matcher) {
@@ -102,7 +101,7 @@ public final class CompletableFutureMatchers {
    * exception.
    *
    * <p><strong>If the {@link CompletionStage} has not yet completed, this matcher waits for it to
-   *    finish.</strong>
+   * finish.</strong>
    */
   public static Matcher<CompletionStage<?>> stageWillCompleteWithException() {
     return stageWillCompleteWithExceptionThat(is(any(Throwable.class)));
@@ -113,7 +112,7 @@ public final class CompletableFutureMatchers {
    * exception.
    *
    * <p><strong>If the {@link CompletionStage} has not yet completed, this matcher waits for it to
-   *    finish.</strong>
+   * finish.</strong>
    */
   public static Matcher<CompletionStage<?>> stageWillCompleteWithExceptionThat(
       final Matcher<? extends Throwable> matcher) {
