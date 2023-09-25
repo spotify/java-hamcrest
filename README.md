@@ -1,6 +1,6 @@
 # Spotify Hamcrest
 
-[![Build Status](https://travis-ci.org/spotify/java-hamcrest.svg?branch=master)](https://travis-ci.org/spotify/java-hamcrest)
+[![Build Status](https://github.com/spotify/java-hamcrest/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/spotify/java-hamcrest/actions/workflows/ci.yaml)
 [![codecov](https://codecov.io/gh/spotify/java-hamcrest/branch/master/graph/badge.svg)](https://codecov.io/gh/spotify/java-hamcrest)
 [![Maven Central](https://img.shields.io/maven-central/v/com.spotify/hamcrest.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.spotify%22%20hamcrest*)
 [![License](https://img.shields.io/github/license/spotify/java-hamcrest.svg)](LICENSE)
