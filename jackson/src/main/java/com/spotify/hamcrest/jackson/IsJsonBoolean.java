@@ -23,12 +23,12 @@ package com.spotify.hamcrest.jackson;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsAnything.anything;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.util.Objects;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.BooleanNode;
+import tools.jackson.databind.node.JsonNodeType;
 
 public class IsJsonBoolean extends AbstractJsonNodeMatcher<BooleanNode> {
 

@@ -20,16 +20,6 @@
 
 package com.spotify.hamcrest.jackson;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.fasterxml.jackson.databind.node.MissingNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.NumericNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.spotify.hamcrest.util.DescriptionUtils;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -39,6 +29,16 @@ import java.util.function.Consumer;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.BooleanNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.JsonNodeType;
+import tools.jackson.databind.node.MissingNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.NumericNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 
 /**
  * Matches JSON Object.
@@ -71,7 +71,7 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
    * @return instance of {@link IsJsonObject}.
    */
   public static IsJsonObject jsonObject(final ObjectNode objectNode) {
-    final Iterator<Map.Entry<String, JsonNode>> fields = objectNode.fields();
+    final Iterator<Map.Entry<String, JsonNode>> fields = objectNode.properties().iterator();
     final LinkedHashMap<String, Matcher<? super JsonNode>> entryMatchers = new LinkedHashMap<>();
 
     while (fields.hasNext()) {
@@ -104,7 +104,7 @@ public class IsJsonObject extends AbstractJsonNodeMatcher<ObjectNode> {
         throw new UnsupportedOperationException(
             "Expected value contains a POJO node, which is not implemented.");
       case STRING:
-        return IsJsonText.jsonText((TextNode) value);
+        return IsJsonText.jsonText((StringNode) value);
       default:
         throw new UnsupportedOperationException("Unsupported node type " + nodeType);
     }

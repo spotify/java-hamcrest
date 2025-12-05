@@ -27,11 +27,11 @@ import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.JsonNodeFactory;
 
 public class IsJsonTextTest {
 
@@ -46,7 +46,7 @@ public class IsJsonTextTest {
 
   @Test
   public void testLiteral() throws Exception {
-    final Matcher<JsonNode> sut = jsonText(NF.textNode("foo"));
+    final Matcher<JsonNode> sut = jsonText(NF.stringNode("foo"));
 
     assertThat(NF.textNode("foo"), is(sut));
   }

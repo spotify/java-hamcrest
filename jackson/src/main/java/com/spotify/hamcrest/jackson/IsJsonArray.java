@@ -23,14 +23,14 @@ package com.spotify.hamcrest.jackson;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsAnything.anything;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Objects;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.JsonNodeType;
 
 public class IsJsonArray extends AbstractJsonNodeMatcher<ArrayNode> {
 

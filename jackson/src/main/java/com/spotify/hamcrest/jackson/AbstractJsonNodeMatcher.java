@@ -20,12 +20,12 @@
 
 package com.spotify.hamcrest.jackson;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.spotify.hamcrest.util.LanguageUtils;
 import java.util.Objects;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.JsonNodeType;
 
 public abstract class AbstractJsonNodeMatcher<A extends JsonNode>
     extends TypeSafeDiagnosingMatcher<JsonNode> {

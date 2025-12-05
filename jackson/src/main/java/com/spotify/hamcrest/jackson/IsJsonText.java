@@ -23,14 +23,14 @@ package com.spotify.hamcrest.jackson;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsAnything.anything;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.fasterxml.jackson.databind.node.TextNode;
 import java.util.Objects;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.JsonNodeType;
+import tools.jackson.databind.node.StringNode;
 
-public class IsJsonText extends AbstractJsonNodeMatcher<TextNode> {
+public class IsJsonText extends AbstractJsonNodeMatcher<StringNode> {
 
   private final Matcher<? super String> textMatcher;
 
@@ -51,12 +51,12 @@ public class IsJsonText extends AbstractJsonNodeMatcher<TextNode> {
     return new IsJsonText(textMatcher);
   }
 
-  public static Matcher<JsonNode> jsonText(final TextNode value) {
+  public static Matcher<JsonNode> jsonText(final StringNode value) {
     return jsonText(value.asText());
   }
 
   @Override
-  protected boolean matchesNode(TextNode node, Description mismatchDescription) {
+  protected boolean matchesNode(StringNode node, Description mismatchDescription) {
     final String value = node.asText();
     if (textMatcher.matches(value)) {
       return true;
