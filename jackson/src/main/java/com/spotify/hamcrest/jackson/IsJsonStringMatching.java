@@ -24,13 +24,13 @@ import static java.util.Objects.requireNonNull;
 import static org.hamcrest.Condition.matched;
 import static org.hamcrest.Condition.notMatched;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import org.hamcrest.Condition;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Matcher for matching Json strings
@@ -74,7 +74,7 @@ public final class IsJsonStringMatching extends TypeSafeDiagnosingMatcher<String
     try {
       final JsonNode jsonNode = MAPPER.readTree(string);
       return matched(jsonNode, mismatchDescription);
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       mismatchDescription
           .appendText(" but the string was not valid JSON ")
           .appendValue(e.getMessage());

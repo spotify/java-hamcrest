@@ -23,16 +23,16 @@ package com.spotify.hamcrest.jackson;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsAnything.anything;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.fasterxml.jackson.databind.node.NumericNode;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.function.Function;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.JsonNodeType;
+import tools.jackson.databind.node.NumericNode;
 
 /**
  * Matches JSON Number.

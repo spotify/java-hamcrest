@@ -20,18 +20,18 @@
 
 package com.spotify.hamcrest.jackson;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.NumericNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import org.hamcrest.Matcher;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.BooleanNode;
+import tools.jackson.databind.node.MissingNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.NumericNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 
 /**
  * Methods to instantiate different JSON Matchers.
@@ -167,7 +167,7 @@ public final class JsonMatchers {
     return IsJsonText.jsonText(textMatcher);
   }
 
-  public static Matcher<JsonNode> jsonText(TextNode value) {
+  public static Matcher<JsonNode> jsonText(StringNode value) {
     return IsJsonText.jsonText(value);
   }
 }

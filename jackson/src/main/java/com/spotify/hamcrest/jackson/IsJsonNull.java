@@ -20,11 +20,11 @@
 
 package com.spotify.hamcrest.jackson;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.fasterxml.jackson.databind.node.NullNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.JsonNodeType;
+import tools.jackson.databind.node.NullNode;
 
 public class IsJsonNull extends AbstractJsonNodeMatcher<NullNode> {
   private static final IsJsonNull INSTANCE = new IsJsonNull();
